@@ -18,6 +18,8 @@
   --vcp-ok: #2e9e5b;
   --vcp-radius: 2px;
   --vcp-gutter: 24px;
+  /* District's site fonts (set in its css-variables snippet) */
+  font-family: var(--body-font-family, 'IBM Plex Sans', Arial, sans-serif);
   color: var(--vcp-ink);
   background: #ffffff;
   line-height: 1.5;
@@ -37,8 +39,16 @@
   margin: 0;
 }
 
-.vcp :where(h1, h2, h3, h4, button, input, select, summary) {
+.vcp :where(button, input, select, summary) {
   font-family: inherit;
+  text-transform: none;
+  letter-spacing: normal;
+  color: inherit;
+}
+
+/* Headings use the site's heading font, like the rest of District */
+.vcp :where(h1, h2, h3, h4) {
+  font-family: var(--heading-font-family, inherit);
   text-transform: none;
   letter-spacing: normal;
   color: inherit;
@@ -712,10 +722,21 @@ details[open] > summary .vcp-plus,
   text-decoration: none;
 }
 
-.vcp .vcp-pill--zip,
-.vcp .vcp-pill--zip:hover {
+/* Zip logo sits straight after its text, like the Afterpay and humm logos */
+.vcp .vcp-zip-logo,
+.vcp .vcp-zip-logo:hover {
+  display: inline-block;
+  margin-left: 4px;
+  padding: 1px 9px 2px;
+  border-radius: 999px;
   background: #aa8fff;
   color: #1a0826;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+  text-decoration: none;
+  vertical-align: middle;
 }
 
 .vcp .vcp-pill--humm,
@@ -905,7 +926,8 @@ details[open] > summary .vcp-plus,
 }
 
 .vcp-au__title {
-  font-size: 16px;
+  font-family: var(--heading-font-family, inherit);
+  font-size: 17px;
   font-weight: 800;
   letter-spacing: 0.02em;
   text-transform: uppercase;

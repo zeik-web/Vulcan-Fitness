@@ -82,8 +82,6 @@ engine.registerFilter('stylesheet_tag', (url) =>
 engine.registerFilter('placeholder_svg_tag', (_name, cls) =>
   `<svg class="${cls}" viewBox="0 0 525 525" xmlns="http://www.w3.org/2000/svg"><rect width="525" height="525"/><text x="50%" y="50%" text-anchor="middle" fill="#fff" font-size="22" font-family="sans-serif">Choose an image in the theme editor</text></svg>`
 );
-engine.registerFilter('font_modify', (font) => font);
-engine.registerFilter('font_face', () => '');
 engine.registerFilter('payment_button', () =>
   '<div class="shopify-payment-button"><button type="button" class="shopify-payment-button__button preview-shop-pay">Buy with <b>Shop</b><span>Pay</span></button>' +
   '<button type="button" class="shopify-payment-button__more-options">More payment options</button></div>'
@@ -151,7 +149,6 @@ function resolveValue(setting, value) {
   if (setting?.type === 'url' && typeof value === 'string' && value.startsWith('shopify://')) {
     return '/' + value.slice('shopify://'.length);
   }
-  if (setting?.type === 'font_picker') return { family: 'Archivo', fallback_families: 'sans-serif' };
   return value;
 }
 
@@ -239,14 +236,16 @@ const page = `<!doctype html>
 <meta name="description" content="Static preview of the Vulcan commercial product template, rendered from the theme code with sample data.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@400;700&family=IBM+Plex+Sans:ital,wght@0,400;0,700;1,400&display=swap">
 <style>
   /* Preview-only chrome. Not part of the theme. */
+  /* District sets these from the theme's font settings (IBM Plex Sans / Archivo Narrow) */
+  :root { --body-font-family: 'IBM Plex Sans', sans-serif; --heading-font-family: 'Archivo Narrow', sans-serif; }
   html { color-scheme: light; }
   body { margin: 0; background: #ffffff; }
-  .preview-bar { position: sticky; top: 0; z-index: 50; padding: 10px 16px; background: #17171b; color: #ffffff; font: 13px/1.4 Archivo, Arial, sans-serif; text-align: center; }
+  .preview-bar { position: sticky; top: 0; z-index: 50; padding: 10px 16px; background: #17171b; color: #ffffff; font: 13px/1.4 'IBM Plex Sans', Arial, sans-serif; text-align: center; }
   .preview-bar strong { color: #f3a14a; }
-  .preview-theme-part { padding: 28px 16px; background: repeating-linear-gradient(135deg, #f5f2ec 0 12px, #efe9df 12px 24px); color: #5c5c62; font: 14px/1.4 Archivo, Arial, sans-serif; text-align: center; }
+  .preview-theme-part { padding: 28px 16px; background: repeating-linear-gradient(135deg, #f5f2ec 0 12px, #efe9df 12px 24px); color: #5c5c62; font: 14px/1.4 'IBM Plex Sans', Arial, sans-serif; text-align: center; }
   .preview-theme-part code { font-size: 13px; }
   .vcp-humm-widget:has(.preview-note) { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
   .preview-note { color: #5c5c62; font-size: 13px; font-style: italic; }

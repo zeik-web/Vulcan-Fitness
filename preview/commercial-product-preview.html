@@ -7,14 +7,16 @@
 <meta name="description" content="Static preview of the Vulcan commercial product template, rendered from the theme code with sample data.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@400;700&family=IBM+Plex+Sans:ital,wght@0,400;0,700;1,400&display=swap">
 <style>
   /* Preview-only chrome. Not part of the theme. */
+  /* District sets these from the theme's font settings (IBM Plex Sans / Archivo Narrow) */
+  :root { --body-font-family: 'IBM Plex Sans', sans-serif; --heading-font-family: 'Archivo Narrow', sans-serif; }
   html { color-scheme: light; }
   body { margin: 0; background: #ffffff; }
-  .preview-bar { position: sticky; top: 0; z-index: 50; padding: 10px 16px; background: #17171b; color: #ffffff; font: 13px/1.4 Archivo, Arial, sans-serif; text-align: center; }
+  .preview-bar { position: sticky; top: 0; z-index: 50; padding: 10px 16px; background: #17171b; color: #ffffff; font: 13px/1.4 'IBM Plex Sans', Arial, sans-serif; text-align: center; }
   .preview-bar strong { color: #f3a14a; }
-  .preview-theme-part { padding: 28px 16px; background: repeating-linear-gradient(135deg, #f5f2ec 0 12px, #efe9df 12px 24px); color: #5c5c62; font: 14px/1.4 Archivo, Arial, sans-serif; text-align: center; }
+  .preview-theme-part { padding: 28px 16px; background: repeating-linear-gradient(135deg, #f5f2ec 0 12px, #efe9df 12px 24px); color: #5c5c62; font: 14px/1.4 'IBM Plex Sans', Arial, sans-serif; text-align: center; }
   .preview-theme-part code { font-size: 13px; }
   .vcp-humm-widget:has(.preview-note) { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
   .preview-note { color: #5c5c62; font-size: 13px; font-style: italic; }
@@ -47,6 +49,8 @@
   --vcp-ok: #2e9e5b;
   --vcp-radius: 2px;
   --vcp-gutter: 24px;
+  /* District's site fonts (set in its css-variables snippet) */
+  font-family: var(--body-font-family, 'IBM Plex Sans', Arial, sans-serif);
   color: var(--vcp-ink);
   background: #ffffff;
   line-height: 1.5;
@@ -66,8 +70,16 @@
   margin: 0;
 }
 
-.vcp :where(h1, h2, h3, h4, button, input, select, summary) {
+.vcp :where(button, input, select, summary) {
   font-family: inherit;
+  text-transform: none;
+  letter-spacing: normal;
+  color: inherit;
+}
+
+/* Headings use the site's heading font, like the rest of District */
+.vcp :where(h1, h2, h3, h4) {
+  font-family: var(--heading-font-family, inherit);
   text-transform: none;
   letter-spacing: normal;
   color: inherit;
@@ -741,10 +753,21 @@ details[open] > summary .vcp-plus,
   text-decoration: none;
 }
 
-.vcp .vcp-pill--zip,
-.vcp .vcp-pill--zip:hover {
+/* Zip logo sits straight after its text, like the Afterpay and humm logos */
+.vcp .vcp-zip-logo,
+.vcp .vcp-zip-logo:hover {
+  display: inline-block;
+  margin-left: 4px;
+  padding: 1px 9px 2px;
+  border-radius: 999px;
   background: #aa8fff;
   color: #1a0826;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+  text-decoration: none;
+  vertical-align: middle;
 }
 
 .vcp .vcp-pill--humm,
@@ -934,7 +957,8 @@ details[open] > summary .vcp-plus,
 }
 
 .vcp-au__title {
-  font-size: 16px;
+  font-family: var(--heading-font-family, inherit);
+  font-size: 17px;
   font-weight: 800;
   letter-spacing: 0.02em;
   text-transform: uppercase;
@@ -1810,16 +1834,7 @@ details[open] > summary .vcp-plus,
   });
 })();
 
-</script><style>
-  
-  
-  
-  
-  
-  .vcp {
-    font-family: Archivo, sans-serif;
-  }
-</style>
+</script>
 
 <div
   class="vcp vcp-product"
@@ -2002,16 +2017,18 @@ details[open] > summary .vcp-plus,
         <span class="vcp-price__now" data-vcp-price>$3,499.00</span>
         <s class="vcp-price__was" data-vcp-compare hidden>$3,499.00</s>
       </div><div class="vcp-price-note">Tax included. Shipping calculated at checkout.</div><div class="vcp-bnpl"><div class="vcp-bnpl__row vcp-bnpl__row--slot" data-vcp-afterpay-slot hidden></div><div class="vcp-bnpl__row">
-            <span class="vcp-bnpl__text">Own it now, pay later</span>
-            <a
-              class="vcp-pill vcp-pill--zip"
-              href="https://zip.co/au"
-              target="_blank"
-              rel="noopener"
-              aria-label="Zip (opens in a new tab)"
-            >
-              Zip
-            </a>
+            <span class="vcp-bnpl__text">
+              Own it now, pay later with
+              <a
+                class="vcp-zip-logo"
+                href="https://zip.co/au"
+                target="_blank"
+                rel="noopener"
+                aria-label="Zip (opens in a new tab)"
+              >
+                zip
+              </a>
+            </span>
           </div><div class="vcp-bnpl__row"><div class="vcp-humm-widget">
                 
                 <span class="preview-note">humm price widget (merchant 30139735) shows here on the live store</span><span class="vcp-pill vcp-pill--humm">humm</span>
@@ -2116,6 +2133,8 @@ details[open] > summary .vcp-plus,
   --vcp-ok: #2e9e5b;
   --vcp-radius: 2px;
   --vcp-gutter: 24px;
+  /* District's site fonts (set in its css-variables snippet) */
+  font-family: var(--body-font-family, 'IBM Plex Sans', Arial, sans-serif);
   color: var(--vcp-ink);
   background: #ffffff;
   line-height: 1.5;
@@ -2135,8 +2154,16 @@ details[open] > summary .vcp-plus,
   margin: 0;
 }
 
-.vcp :where(h1, h2, h3, h4, button, input, select, summary) {
+.vcp :where(button, input, select, summary) {
   font-family: inherit;
+  text-transform: none;
+  letter-spacing: normal;
+  color: inherit;
+}
+
+/* Headings use the site's heading font, like the rest of District */
+.vcp :where(h1, h2, h3, h4) {
+  font-family: var(--heading-font-family, inherit);
   text-transform: none;
   letter-spacing: normal;
   color: inherit;
@@ -2810,10 +2837,21 @@ details[open] > summary .vcp-plus,
   text-decoration: none;
 }
 
-.vcp .vcp-pill--zip,
-.vcp .vcp-pill--zip:hover {
+/* Zip logo sits straight after its text, like the Afterpay and humm logos */
+.vcp .vcp-zip-logo,
+.vcp .vcp-zip-logo:hover {
+  display: inline-block;
+  margin-left: 4px;
+  padding: 1px 9px 2px;
+  border-radius: 999px;
   background: #aa8fff;
   color: #1a0826;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+  text-decoration: none;
+  vertical-align: middle;
 }
 
 .vcp .vcp-pill--humm,
@@ -3003,7 +3041,8 @@ details[open] > summary .vcp-plus,
 }
 
 .vcp-au__title {
-  font-size: 16px;
+  font-family: var(--heading-font-family, inherit);
+  font-size: 17px;
   font-weight: 800;
   letter-spacing: 0.02em;
   text-transform: uppercase;
@@ -3509,6 +3548,8 @@ details[open] > summary .vcp-plus,
   --vcp-ok: #2e9e5b;
   --vcp-radius: 2px;
   --vcp-gutter: 24px;
+  /* District's site fonts (set in its css-variables snippet) */
+  font-family: var(--body-font-family, 'IBM Plex Sans', Arial, sans-serif);
   color: var(--vcp-ink);
   background: #ffffff;
   line-height: 1.5;
@@ -3528,8 +3569,16 @@ details[open] > summary .vcp-plus,
   margin: 0;
 }
 
-.vcp :where(h1, h2, h3, h4, button, input, select, summary) {
+.vcp :where(button, input, select, summary) {
   font-family: inherit;
+  text-transform: none;
+  letter-spacing: normal;
+  color: inherit;
+}
+
+/* Headings use the site's heading font, like the rest of District */
+.vcp :where(h1, h2, h3, h4) {
+  font-family: var(--heading-font-family, inherit);
   text-transform: none;
   letter-spacing: normal;
   color: inherit;
@@ -4203,10 +4252,21 @@ details[open] > summary .vcp-plus,
   text-decoration: none;
 }
 
-.vcp .vcp-pill--zip,
-.vcp .vcp-pill--zip:hover {
+/* Zip logo sits straight after its text, like the Afterpay and humm logos */
+.vcp .vcp-zip-logo,
+.vcp .vcp-zip-logo:hover {
+  display: inline-block;
+  margin-left: 4px;
+  padding: 1px 9px 2px;
+  border-radius: 999px;
   background: #aa8fff;
   color: #1a0826;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+  text-decoration: none;
+  vertical-align: middle;
 }
 
 .vcp .vcp-pill--humm,
@@ -4396,7 +4456,8 @@ details[open] > summary .vcp-plus,
 }
 
 .vcp-au__title {
-  font-size: 16px;
+  font-family: var(--heading-font-family, inherit);
+  font-size: 17px;
   font-weight: 800;
   letter-spacing: 0.02em;
   text-transform: uppercase;
@@ -4890,6 +4951,8 @@ details[open] > summary .vcp-plus,
   --vcp-ok: #2e9e5b;
   --vcp-radius: 2px;
   --vcp-gutter: 24px;
+  /* District's site fonts (set in its css-variables snippet) */
+  font-family: var(--body-font-family, 'IBM Plex Sans', Arial, sans-serif);
   color: var(--vcp-ink);
   background: #ffffff;
   line-height: 1.5;
@@ -4909,8 +4972,16 @@ details[open] > summary .vcp-plus,
   margin: 0;
 }
 
-.vcp :where(h1, h2, h3, h4, button, input, select, summary) {
+.vcp :where(button, input, select, summary) {
   font-family: inherit;
+  text-transform: none;
+  letter-spacing: normal;
+  color: inherit;
+}
+
+/* Headings use the site's heading font, like the rest of District */
+.vcp :where(h1, h2, h3, h4) {
+  font-family: var(--heading-font-family, inherit);
   text-transform: none;
   letter-spacing: normal;
   color: inherit;
@@ -5584,10 +5655,21 @@ details[open] > summary .vcp-plus,
   text-decoration: none;
 }
 
-.vcp .vcp-pill--zip,
-.vcp .vcp-pill--zip:hover {
+/* Zip logo sits straight after its text, like the Afterpay and humm logos */
+.vcp .vcp-zip-logo,
+.vcp .vcp-zip-logo:hover {
+  display: inline-block;
+  margin-left: 4px;
+  padding: 1px 9px 2px;
+  border-radius: 999px;
   background: #aa8fff;
   color: #1a0826;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+  text-decoration: none;
+  vertical-align: middle;
 }
 
 .vcp .vcp-pill--humm,
@@ -5777,7 +5859,8 @@ details[open] > summary .vcp-plus,
 }
 
 .vcp-au__title {
-  font-size: 16px;
+  font-family: var(--heading-font-family, inherit);
+  font-size: 17px;
   font-weight: 800;
   letter-spacing: 0.02em;
   text-transform: uppercase;

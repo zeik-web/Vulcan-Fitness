@@ -65,24 +65,6 @@
 {% render 'vulcan-commercial-assets' %}
 <script src="{{ 'vulcan-commercial.js' | asset_url }}" defer="defer"></script>
 
-{%- liquid
-  assign font = section.settings.font
-  assign font_500 = font | font_modify: 'weight', '500'
-  assign font_600 = font | font_modify: 'weight', '600'
-  assign font_700 = font | font_modify: 'weight', '700'
-  assign font_800 = font | font_modify: 'weight', '800'
--%}
-{% style %}
-  {{ font | font_face: font_display: 'swap' }}
-  {{ font_500 | font_face: font_display: 'swap' }}
-  {{ font_600 | font_face: font_display: 'swap' }}
-  {{ font_700 | font_face: font_display: 'swap' }}
-  {{ font_800 | font_face: font_display: 'swap' }}
-  .vcp {
-    font-family: {{ font.family }}, {{ font.fallback_families }};
-  }
-{% endstyle %}
-
 <div
   class="vcp vcp-product"
   data-vcp-product
@@ -348,16 +330,18 @@
 
         {%- if section.settings.show_zip -%}
           <div class="vcp-bnpl__row">
-            <span class="vcp-bnpl__text">{{ section.settings.zip_text | escape }}</span>
-            <a
-              class="vcp-pill vcp-pill--zip"
-              href="https://zip.co/au"
-              target="_blank"
-              rel="noopener"
-              aria-label="Zip (opens in a new tab)"
-            >
-              Zip
-            </a>
+            <span class="vcp-bnpl__text">
+              {{ section.settings.zip_text | escape }}
+              <a
+                class="vcp-zip-logo"
+                href="https://zip.co/au"
+                target="_blank"
+                rel="noopener"
+                aria-label="Zip (opens in a new tab)"
+              >
+                zip
+              </a>
+            </span>
           </div>
         {%- endif -%}
 
@@ -556,13 +540,6 @@
       "label": "Breadcrumb middle link URL"
     },
     {
-      "type": "font_picker",
-      "id": "font",
-      "label": "Page font",
-      "info": "Archivo matches the design. Pick your District body font to blend in with the rest of the site.",
-      "default": "archivo_n4"
-    },
-    {
       "type": "header",
       "content": "Trustpilot"
     },
@@ -731,7 +708,8 @@
       "type": "text",
       "id": "zip_text",
       "label": "Zip text",
-      "default": "Own it now, pay later"
+      "info": "The Zip logo follows this text.",
+      "default": "Own it now, pay later with"
     },
     {
       "type": "header",

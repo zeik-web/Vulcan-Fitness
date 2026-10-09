@@ -37,7 +37,8 @@ are only used for the plain strip, and while the widget loads.
   editable). Sold-out variants show a grey "Sold out" badge and disable the button.
 - **Afterpay**: shown by the Afterpay app snippet already in your theme (`theme.liquid`), not by
   this section.
-- **Zip**: "Own it now, pay later" with the Zip badge — shown at every price, as Zip has no limit.
+- **Zip**: "Own it now, pay later with" followed by the Zip logo, like the Afterpay and humm
+  messages — shown at every price, as Zip has no limit.
 - **humm**: humm's own price widget, using the same script and merchant ID (30139735) as your
   current product pages, so the terms it shows stay current. You can switch to your own text.
 - **Shop Pay**: Shopify's dynamic checkout button (`payment_button`) — Shop Pay plus the
@@ -48,6 +49,12 @@ are only used for the plain strip, and while the widget loads.
 - **100% Australian owned** with the Australian Owned Certified #08375 badge.
 - **Custom code** and **app** blocks can be added to the buy box (they appear under the payment
   rows) — useful for payment or app widgets.
+
+### Fonts
+
+The page uses your District theme fonts — the body font for text and the heading font for
+headings (IBM Plex Sans and Archivo Narrow today). It reads them from the theme, so if you change
+fonts in *Theme settings › Typography*, this page follows.
 
 ## Files
 
