@@ -1,8 +1,8 @@
 /*
   Vulcan commercial product page
   Gallery thumbnails, Shipping/Installation/Warranty dropdowns, the consultant
-  popover, quantity stepper, variant changes (price, stock, Afterpay) and the
-  Why us scroll/hover effects.
+  popover, quantity stepper, variant changes (price, stock badge), the live
+  Trustpilot widget, front/side dimension views and the Why us effects.
   Adding to cart is handled by District's <product-form> element.
 */
 (function () {
@@ -143,17 +143,13 @@
       });
     }
 
-    /* ---------- Quantity, price and stock ---------- */
+    /* ---------- Quantity, price and stock badge ---------- */
 
     var priceEl = root.querySelector('[data-vcp-price]');
     var compareEl = root.querySelector('[data-vcp-compare]');
     var badgeEl = root.querySelector('[data-vcp-badge]');
-    var stockEl = root.querySelector('[data-vcp-stock]');
-    var stockTextEl = root.querySelector('[data-vcp-stock-text]');
     var atcButton = root.querySelector('[data-vcp-atc]');
     var atcLabel = root.querySelector('[data-vcp-atc-label]');
-    var afterpayRow = root.querySelector('[data-vcp-afterpay]');
-    var afterpayAmount = root.querySelector('[data-vcp-afterpay-amount]');
     var hummAmount = root.querySelector('[data-vcp-humm-amount]');
 
     function money(cents) {
@@ -165,18 +161,14 @@
       return isNaN(value) || value < 1 ? 1 : value;
     }
 
-    function stockFor(variant) {
-      if (!variant.available) {
-        return { state: 'out', badge: config.badgeOut, line: config.stockOut };
-      }
+    // Same rules as the Liquid: green in stock, orange pre-order, grey sold out.
+    function badgeFor(variant) {
+      if (!variant.available) return { state: 'out', text: config.badgeOut };
+      if (config.badgeMode === 'pre_order') return { state: 'other', text: config.badgePre };
       var status = (config.splitTitle && titleStatus(variant.title)) || config.productStatus || '';
-      if (!status) {
-        return { state: 'in', badge: config.badgeIn, line: config.stockIn };
-      }
-      if (status.toUpperCase().indexOf('IN STOCK') !== -1) {
-        return { state: 'in', badge: status, line: config.stockIn };
-      }
-      return { state: 'other', badge: status, line: status };
+      if (config.badgeMode === 'in_stock' || !status) return { state: 'in', text: config.badgeIn };
+      if (status.toUpperCase().indexOf('IN STOCK') !== -1) return { state: 'in', text: status };
+      return { state: 'other', text: status };
     }
 
     function render() {
@@ -190,27 +182,15 @@
         if (onSale) compareEl.textContent = money(current.compare_at_price);
       }
 
-      var stock = stockFor(current);
       if (badgeEl) {
-        badgeEl.textContent = stock.badge;
-        badgeEl.setAttribute('data-state', stock.state);
+        var badge = badgeFor(current);
+        badgeEl.textContent = badge.text;
+        badgeEl.setAttribute('data-state', badge.state);
       }
-      if (stockEl) stockEl.setAttribute('data-state', stock.state);
-      if (stockTextEl) stockTextEl.textContent = stock.line;
 
       if (atcButton) {
         atcButton.disabled = !current.available;
-        if (atcLabel) {
-          atcLabel.textContent = current.available
-            ? config.atcLabel + ' — ' + money(price * quantity())
-            : config.soldOutLabel;
-        }
-      }
-
-      if (afterpayRow) {
-        afterpayRow.hidden =
-          price < (config.afterpayMin || 0) || (config.afterpayMax > 0 && price > config.afterpayMax);
-        if (afterpayAmount) afterpayAmount.textContent = money(Math.round(price / 4));
+        if (atcLabel) atcLabel.textContent = current.available ? config.atcLabel : config.soldOutLabel;
       }
 
       if (hummAmount && config.hummPayments > 0) {
@@ -224,13 +204,10 @@
           var step = parseInt(button.getAttribute('data-vcp-qty-step'), 10);
           var max = parseInt(qtyInput.max, 10) || 99;
           qtyInput.value = Math.min(Math.max(quantity() + step, 1), max);
-          render();
         });
       });
-      qtyInput.addEventListener('input', render);
       qtyInput.addEventListener('change', function () {
         qtyInput.value = quantity();
-        render();
       });
     }
 
@@ -250,6 +227,80 @@
         window.history.replaceState({}, '', url.toString());
       });
     }
+  }
+
+  /* ---------- Trustpilot ---------- */
+
+  // The Trustpilot app normally loads Trustpilot's widget script on every
+  // page. If it hasn't by the time the page has loaded, load it ourselves.
+  var TRUSTPILOT_SRC = 'https://widget.trustpilot.com/bootstrap/v5/tp.widget.bootstrap.min.js';
+
+  function initTrustbox(element) {
+    if (!element || element.dataset.vcpReady) return;
+    element.dataset.vcpReady = 'true';
+
+    function load() {
+      if (element.querySelector('iframe')) return;
+      if (window.Trustpilot && typeof window.Trustpilot.loadFromElement === 'function') {
+        window.Trustpilot.loadFromElement(element);
+      } else if (!document.querySelector('script[src*="tp.widget.bootstrap"]')) {
+        var script = document.createElement('script');
+        script.src = TRUSTPILOT_SRC;
+        script.async = true;
+        document.head.appendChild(script);
+      }
+    }
+
+    if (document.readyState === 'complete') {
+      load();
+    } else {
+      window.addEventListener('load', load);
+    }
+  }
+
+  /* ---------- Dimension views (front / side) ---------- */
+
+  function initViews(root) {
+    if (!root || root.dataset.vcpReady) return;
+    root.dataset.vcpReady = 'true';
+
+    var views = Array.prototype.slice.call(root.querySelectorAll('[data-vcp-view]'));
+    var tabs = Array.prototype.slice.call(root.querySelectorAll('[data-vcp-view-go]'));
+    if (views.length < 2) return;
+    var index = 0;
+
+    function show(next) {
+      index = (next + views.length) % views.length;
+      views.forEach(function (view, i) {
+        view.hidden = i !== index;
+      });
+      tabs.forEach(function (tab, i) {
+        tab.setAttribute('aria-pressed', String(i === index));
+      });
+    }
+
+    root.querySelectorAll('[data-vcp-view-step]').forEach(function (button) {
+      button.addEventListener('click', function () {
+        show(index + parseInt(button.getAttribute('data-vcp-view-step'), 10));
+      });
+    });
+    tabs.forEach(function (tab, i) {
+      tab.addEventListener('click', function () {
+        show(i);
+      });
+    });
+
+    // Swipe left/right on touch screens
+    var startX = null;
+    root.addEventListener('touchstart', function (event) {
+      startX = event.touches[0].clientX;
+    }, { passive: true });
+    root.addEventListener('touchend', function (event) {
+      if (startX === null) return;
+      var delta = event.changedTouches[0].clientX - startX;
+      startX = null;
+      if (Math.abs(delta) > 40) show(index + (delta < 0 ? 1 : -1));
+    });
   }
 
   /* ---------- Why us ---------- */
@@ -309,6 +360,8 @@
   function initAll(scope) {
     (scope || document).querySelectorAll('[data-vcp-product]').forEach(initProduct);
     (scope || document).querySelectorAll('[data-vcp-why]').forEach(initWhy);
+    (scope || document).querySelectorAll('[data-vcp-trustbox]').forEach(initTrustbox);
+    (scope || document).querySelectorAll('[data-vcp-views]').forEach(initViews);
   }
 
   window.VulcanCommercial = { init: initAll, formatMoney: formatMoney };

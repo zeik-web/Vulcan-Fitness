@@ -1,8 +1,9 @@
 {%- comment -%}
   Vulcan commercial product — main section.
-  Trustpilot strip, title + blurb, gallery, Shipping/Installation/Warranty
-  dropdowns, and the buy box (Afterpay, humm, Shop Pay, guarantees,
-  Australian owned). Built for the District theme: the add-to-cart form is
+  Live Trustpilot widget, title + blurb, gallery, Shipping/Installation/
+  Warranty dropdowns, and the buy box (Zip, humm, Shop Pay, guarantees,
+  Australian owned). Afterpay's message comes from the Afterpay app snippet
+  in theme.liquid. Built for the District theme: the add-to-cart form is
   wrapped in District's <product-form> so it opens the theme's cart popup.
 {%- endcomment -%}
 
@@ -13,7 +14,7 @@
 
   # Titles in this store end with a stock status, e.g. "... | IN STOCK" or
   # "... | MADE-TO-ORDER 60~75 DAYS". Show the name in the H1 and move the
-  # status into the badge and stock line.
+  # status into the photo badge.
   assign display_title = product.title
   assign title_status = ''
   if section.settings.split_title and product.title contains ' | '
@@ -27,41 +28,27 @@
   endif
   assign status_text = variant_status | default: title_status
 
-  if current_variant.available
-    if status_text == blank
-      assign stock_state = 'in'
-      assign badge_text = section.settings.badge_in_text
-      assign stock_text = section.settings.stock_in_text
-    else
-      assign status_upcase = status_text | upcase
-      if status_upcase contains 'IN STOCK'
-        assign stock_state = 'in'
-        assign stock_text = section.settings.stock_in_text
-      else
-        assign stock_state = 'other'
-        assign stock_text = status_text
-      endif
-      assign badge_text = status_text
-    endif
-  else
+  # Badge: green = in stock, orange = pre-order / made-to-order, grey = sold out
+  assign status_upcase = status_text | upcase
+  if current_variant.available == false
     assign stock_state = 'out'
     assign badge_text = section.settings.badge_out_text
-    assign stock_text = section.settings.stock_out_text
+  elsif section.settings.badge_mode == 'pre_order'
+    assign stock_state = 'other'
+    assign badge_text = section.settings.badge_preorder_text
+  elsif section.settings.badge_mode == 'in_stock' or status_text == blank
+    assign stock_state = 'in'
+    assign badge_text = section.settings.badge_in_text
+  elsif status_upcase contains 'IN STOCK'
+    assign stock_state = 'in'
+    assign badge_text = status_text
+  else
+    assign stock_state = 'other'
+    assign badge_text = status_text
   endif
 
   assign price = current_variant.price
   assign compare_at = current_variant.compare_at_price | default: 0
-
-  assign afterpay_min = section.settings.afterpay_min | default: 0 | times: 100
-  assign afterpay_max = section.settings.afterpay_max | default: 0 | times: 100
-  assign afterpay_ok = true
-  if price < afterpay_min
-    assign afterpay_ok = false
-  endif
-  if afterpay_max > 0 and price > afterpay_max
-    assign afterpay_ok = false
-  endif
-  assign afterpay_amount = price | times: 1.0 | divided_by: 4 | round
 
   assign humm_payments = section.settings.humm_payments | default: 0
   assign humm_amount_html = ''
@@ -99,7 +86,7 @@
 <div
   class="vcp vcp-product"
   data-vcp-product
-  style="--vcp-stage-ratio: {{ section.settings.gallery_ratio }}; --vcp-stage-bg: {{ section.settings.gallery_bg }}; --vcp-badge-in: {{ section.settings.badge_in_color }};"
+  style="--vcp-stage-ratio: {{ section.settings.gallery_ratio }}; --vcp-stage-bg: {{ section.settings.gallery_bg }}; --vcp-badge-in: {{ section.settings.badge_in_color }}; --vcp-badge-pre: {{ section.settings.badge_preorder_color }};"
 >
   {%- if section.settings.show_breadcrumb -%}
     <nav class="vcp-wrap vcp-crumbs" aria-label="Breadcrumb">
@@ -121,18 +108,34 @@
   <div class="vcp-wrap vcp-main">
     <div class="vcp-main__top">
       {%- if section.settings.show_trustpilot -%}
-        {%- if section.settings.trustpilot_widget != blank -%}
-          <div class="vcp-tp-widget">{{ section.settings.trustpilot_widget }}</div>
-        {%- else -%}
-          {%- assign rating = section.settings.trustpilot_rating | plus: 0 -%}
-          <a class="vcp-tp" href="{{ section.settings.trustpilot_link | default: '#reviews' }}">
-            <span class="vcp-tp__stars" role="img" aria-label="Rated {{ rating }} out of 5 on Trustpilot">
+        {%- liquid
+          assign tp_score = section.settings.trustpilot_score | default: '5' | plus: 0
+          # Trustpilot rounds the stars to the nearest half
+          assign tp_stars = tp_score | times: 2 | round | divided_by: 2.0
+          assign tp_url = section.settings.trustpilot_link | default: 'https://au.trustpilot.com/review/vulcanfitness.com.au'
+          case section.settings.trustpilot_style
+            when 'mini'
+              assign tp_template = '53aa8807dec7e10d38f59f32'
+              assign tp_height = '150px'
+            when 'micro_trustscore'
+              assign tp_template = '5419b637fa0340045cd0c936'
+              assign tp_height = '20px'
+            when 'micro_star'
+              assign tp_template = '5419b732fbfb950b10de65e5'
+              assign tp_height = '24px'
+            else
+              assign tp_template = ''
+          endcase
+        -%}
+        {%- capture tp_static -%}
+          <a class="vcp-tp" href="{{ tp_url }}" target="_blank" rel="noopener">
+            <span class="vcp-tp__stars" role="img" aria-label="Rated {{ tp_score }} out of 5 on Trustpilot">
               {%- for i in (1..5) -%}
                 {%- liquid
                   assign half_step = i | minus: 0.5
-                  if rating >= i
+                  if tp_stars >= i
                     assign star_class = ''
-                  elsif rating >= half_step
+                  elsif tp_stars >= half_step
                     assign star_class = ' vcp-tp__star--half'
                   else
                     assign star_class = ' vcp-tp__star--empty'
@@ -146,12 +149,30 @@
               {%- endfor -%}
             </span>
             <span class="vcp-tp__count">
-              <strong>{{ section.settings.trustpilot_reviews | escape }}</strong> on Trustpilot
+              <strong>TrustScore {{ section.settings.trustpilot_score | escape }}</strong>
+              | {{ section.settings.trustpilot_reviews | escape }} on Trustpilot
             </span>
-            {%- if section.settings.trustpilot_cta != blank -%}
-              <span class="vcp-tp__cta">{{ section.settings.trustpilot_cta | escape }}</span>
-            {%- endif -%}
           </a>
+        {%- endcapture -%}
+        {%- if tp_template != blank and section.settings.trustpilot_business_id != blank -%}
+          {%- comment -%}
+            Trustpilot's own widget — pulls the live TrustScore and review count.
+            The strip inside shows until it loads (or if it can't).
+          {%- endcomment -%}
+          <div
+            class="trustpilot-widget vcp-tp-live vcp-tp-live--{{ section.settings.trustpilot_style }}"
+            data-locale="en-AU"
+            data-template-id="{{ tp_template }}"
+            data-businessunit-id="{{ section.settings.trustpilot_business_id | strip | escape }}"
+            data-style-height="{{ tp_height }}"
+            data-style-width="100%"
+            data-theme="light"
+            data-vcp-trustbox
+          >
+            {{ tp_static }}
+          </div>
+        {%- else -%}
+          {{ tp_static }}
         {%- endif -%}
       {%- endif -%}
 
@@ -271,8 +292,8 @@
               {{ block.shopify_attributes }}
             >
               <span class="vcp-tab__label">
-                {%- if block.settings.emoji != blank -%}
-                  <span class="vcp-emoji" aria-hidden="true">{{ block.settings.emoji }}</span>
+                {%- if block.settings.icon != 'none' -%}
+                  <span class="vcp-tab__icon">{% render 'vulcan-commercial-icon', icon: block.settings.icon, size: 19 %}</span>
                 {%- endif -%}
                 {{ block.settings.title | escape }}
               </span>
@@ -303,11 +324,6 @@
         <div class="vcp-price-note">{{ section.settings.price_note }}</div>
       {%- endif -%}
 
-      <div class="vcp-stock" data-vcp-stock data-state="{{ stock_state }}">
-        <span class="vcp-stock__dot" aria-hidden="true"></span>
-        <span data-vcp-stock-text>{{ stock_text | escape }}</span>
-      </div>
-
       {%- unless product.has_only_default_variant -%}
         <div class="vcp-variant">
           <label for="vcp-variant-{{ section.id }}">{{ product.options | join: ' / ' | escape }}</label>
@@ -322,21 +338,19 @@
         </div>
       {%- endunless -%}
 
-      {%- if section.settings.show_afterpay or section.settings.show_humm -%}
+      {%- if section.settings.show_zip or section.settings.show_humm -%}
         <div class="vcp-bnpl">
-          {%- if section.settings.show_afterpay -%}
-            <div class="vcp-bnpl__row" data-vcp-afterpay {% unless afterpay_ok %}hidden{% endunless %}>
-              <span class="vcp-bnpl__text">
-                4 interest-free payments of <strong data-vcp-afterpay-amount>{{ afterpay_amount | money }}</strong>
-              </span>
+          {%- if section.settings.show_zip -%}
+            <div class="vcp-bnpl__row">
+              <span class="vcp-bnpl__text">{{ section.settings.zip_text | escape }}</span>
               <a
-                class="vcp-pill vcp-pill--afterpay"
-                href="https://www.afterpay.com/en-AU/how-it-works"
+                class="vcp-pill vcp-pill--zip"
+                href="https://zip.co/au"
                 target="_blank"
                 rel="noopener"
-                aria-label="Afterpay — how it works (opens in a new tab)"
+                aria-label="Zip (opens in a new tab)"
               >
-                Afterpay
+                Zip
               </a>
             </div>
           {%- endif -%}
@@ -413,7 +427,7 @@
             >
               <span data-vcp-atc-label>
                 {%- if current_variant.available -%}
-                  {{ section.settings.atc_label | escape }} — {{ price | money }}
+                  {{ section.settings.atc_label | escape }}
                 {%- else -%}
                   {{ section.settings.sold_out_label | escape }}
                 {%- endif -%}
@@ -480,14 +494,12 @@
       "moneyFormat": {{ shop.money_format | json }},
       "splitTitle": {{ section.settings.split_title | json }},
       "productStatus": {{ title_status | json }},
+      "badgeMode": {{ section.settings.badge_mode | json }},
       "badgeIn": {{ section.settings.badge_in_text | json }},
+      "badgePre": {{ section.settings.badge_preorder_text | json }},
       "badgeOut": {{ section.settings.badge_out_text | json }},
-      "stockIn": {{ section.settings.stock_in_text | json }},
-      "stockOut": {{ section.settings.stock_out_text | json }},
       "atcLabel": {{ section.settings.atc_label | json }},
       "soldOutLabel": {{ section.settings.sold_out_label | json }},
-      "afterpayMin": {{ afterpay_min | json }},
-      "afterpayMax": {{ afterpay_max | json }},
       "hummPayments": {{ humm_payments | json }},
       "variants": {{ product.variants | json }}
     }
@@ -557,41 +569,41 @@
     },
     {
       "type": "select",
-      "id": "trustpilot_rating",
-      "label": "Stars",
+      "id": "trustpilot_style",
+      "label": "Trustpilot widget",
       "options": [
-        { "value": "5", "label": "5" },
-        { "value": "4.5", "label": "4.5" },
-        { "value": "4", "label": "4" },
-        { "value": "3.5", "label": "3.5" },
-        { "value": "3", "label": "3" }
+        { "value": "mini", "label": "Mini — stars, TrustScore & review count (live)" },
+        { "value": "micro_trustscore", "label": "Micro TrustScore — one line (live)" },
+        { "value": "micro_star", "label": "Micro Star — one line (live)" },
+        { "value": "static", "label": "Strip with the numbers below (not live)" }
       ],
-      "default": "5"
+      "default": "mini",
+      "info": "The live widgets are Trustpilot's own and update by themselves."
+    },
+    {
+      "type": "text",
+      "id": "trustpilot_business_id",
+      "label": "Trustpilot business ID",
+      "default": "6022a7fcf1069f000155785b"
+    },
+    {
+      "type": "text",
+      "id": "trustpilot_score",
+      "label": "TrustScore",
+      "info": "Shown in the strip, and while the live widget loads.",
+      "default": "4.9"
     },
     {
       "type": "text",
       "id": "trustpilot_reviews",
       "label": "Review count text",
-      "default": "750+ reviews"
-    },
-    {
-      "type": "text",
-      "id": "trustpilot_cta",
-      "label": "Link text",
-      "default": "Read reviews →"
+      "default": "763 reviews"
     },
     {
       "type": "text",
       "id": "trustpilot_link",
-      "label": "Link",
-      "info": "“#reviews” scrolls to the Trustpilot band further down the page.",
-      "default": "#reviews"
-    },
-    {
-      "type": "html",
-      "id": "trustpilot_widget",
-      "label": "Trustpilot TrustBox code (optional)",
-      "info": "Paste a TrustBox mini widget here to replace the strip above. The Trustpilot app or bootstrap script must be installed for it to load."
+      "label": "Trustpilot page link",
+      "default": "https://au.trustpilot.com/review/vulcanfitness.com.au"
     },
     {
       "type": "header",
@@ -620,11 +632,28 @@
       "default": true
     },
     {
+      "type": "select",
+      "id": "badge_mode",
+      "label": "Stock badge",
+      "options": [
+        { "value": "auto", "label": "Automatic — from the “| status” in the title" },
+        { "value": "in_stock", "label": "In stock (green)" },
+        { "value": "pre_order", "label": "Pre-order (orange)" }
+      ],
+      "default": "auto",
+      "info": "Automatic shows green for “IN STOCK” and orange for anything else, like “PRE-ORDER …” or “MADE-TO-ORDER …”. Sold-out products always show grey."
+    },
+    {
       "type": "text",
       "id": "badge_in_text",
-      "label": "Badge text when in stock",
-      "info": "Used when the title has no “| status” part.",
+      "label": "In-stock badge text",
       "default": "IN STOCK"
+    },
+    {
+      "type": "text",
+      "id": "badge_preorder_text",
+      "label": "Pre-order badge text",
+      "default": "PRE-ORDER"
     },
     {
       "type": "text",
@@ -636,8 +665,13 @@
       "type": "color",
       "id": "badge_in_color",
       "label": "In-stock badge colour",
-      "info": "Pre-order and made-to-order badges use the orange accent; sold out uses grey.",
       "default": "#0ADD17"
+    },
+    {
+      "type": "color",
+      "id": "badge_preorder_color",
+      "label": "Pre-order badge colour",
+      "default": "#DD760A"
     },
     {
       "type": "checkbox",
@@ -675,40 +709,24 @@
       "default": "Tax included. Shipping calculated at checkout."
     },
     {
-      "type": "text",
-      "id": "stock_in_text",
-      "label": "Stock line when in stock",
-      "info": "Pre-order and made-to-order products show their title status here instead.",
-      "default": "In stock — dispatches from Brisbane"
-    },
-    {
-      "type": "text",
-      "id": "stock_out_text",
-      "label": "Stock line when sold out",
-      "default": "Sold out — contact us for the next shipment"
-    },
-    {
       "type": "header",
-      "content": "Afterpay"
+      "content": "Zip"
+    },
+    {
+      "type": "paragraph",
+      "content": "Afterpay's message is added by the Afterpay app snippet in your theme, so it isn't set here."
     },
     {
       "type": "checkbox",
-      "id": "show_afterpay",
-      "label": "Show Afterpay",
+      "id": "show_zip",
+      "label": "Show Zip",
       "default": true
     },
     {
-      "type": "number",
-      "id": "afterpay_min",
-      "label": "Afterpay minimum order ($)",
-      "default": 1
-    },
-    {
-      "type": "number",
-      "id": "afterpay_max",
-      "label": "Afterpay maximum order ($)",
-      "info": "Your Afterpay contract limit. Products priced outside the minimum and maximum hide the Afterpay row. 0 = no limit.",
-      "default": 4000
+      "type": "text",
+      "id": "zip_text",
+      "label": "Zip text",
+      "default": "Own it now, pay later"
     },
     {
       "type": "header",
@@ -809,10 +827,21 @@
       "limit": 4,
       "settings": [
         {
-          "type": "text",
-          "id": "emoji",
-          "label": "Emoji",
-          "default": "🚚"
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "truck", "label": "Truck" },
+            { "value": "tools", "label": "Spanner" },
+            { "value": "shield", "label": "Shield" },
+            { "value": "return", "label": "Return arrow" },
+            { "value": "check", "label": "Tick" },
+            { "value": "award", "label": "Award" },
+            { "value": "star", "label": "Star" },
+            { "value": "chat", "label": "Chat" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "truck"
         },
         {
           "type": "text",
@@ -876,7 +905,7 @@
           "type": "liquid",
           "id": "custom_liquid",
           "label": "Custom Liquid or HTML",
-          "info": "Shows in the buy box, under the Afterpay and humm rows. Use it for payment widgets or anything else you need to paste in."
+          "info": "Shows in the buy box, under the Zip and humm rows. Use it for payment widgets or anything else you need to paste in."
         }
       ]
     },
@@ -890,15 +919,15 @@
       "blocks": [
         {
           "type": "tab",
-          "settings": { "emoji": "🚚", "title": "Shipping" }
+          "settings": { "icon": "truck", "title": "Shipping" }
         },
         {
           "type": "tab",
-          "settings": { "emoji": "🛠️", "title": "Installation" }
+          "settings": { "icon": "tools", "title": "Installation" }
         },
         {
           "type": "tab",
-          "settings": { "emoji": "🛡️", "title": "Warranty" }
+          "settings": { "icon": "shield", "title": "Warranty" }
         },
         {
           "type": "guarantee",

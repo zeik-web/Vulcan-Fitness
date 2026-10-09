@@ -23,7 +23,7 @@
 </style>
 </head>
 <body>
-<div class="preview-bar"><strong>Preview</strong> — rendered from the theme files with the live Leg Extension &amp; Leg Curl data. Buttons don't add to cart here.</div>
+<div class="preview-bar"><strong>Preview</strong> — rendered from the theme files with the live Leg Extension &amp; Leg Curl data. Buttons don't add to cart here; the dimension photos are stand-ins.</div>
 <div class="preview-theme-part">District theme announcement bar &amp; header</div>
 <section class="shopify-section"><style>
 /*
@@ -335,10 +335,15 @@ details[open] > summary .vcp-plus,
   font-weight: 700;
 }
 
-.vcp-tp__cta {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--vcp-accent-ink);
+/* Live Trustpilot widget; the strip inside shows until it loads */
+.vcp-tp-live {
+  align-self: flex-start;
+  width: 100%;
+  max-width: 420px;
+}
+
+.vcp-tp-live--mini:has(iframe) {
+  max-width: 260px;
 }
 
 .vcp-heading {
@@ -412,7 +417,7 @@ details[open] > summary .vcp-plus,
 }
 
 .vcp-badge[data-state='other'] {
-  background: var(--vcp-accent);
+  background: var(--vcp-badge-pre, #dd760a);
 }
 
 .vcp-badge[data-state='out'] {
@@ -564,10 +569,9 @@ details[open] > summary .vcp-plus,
   gap: 8px;
 }
 
-.vcp-emoji {
-  font-size: 17px;
-  line-height: 1;
-  font-weight: 400;
+.vcp-tab__icon {
+  display: flex;
+  color: var(--vcp-ink);
 }
 
 .vcp-tab-panel {
@@ -624,50 +628,26 @@ details[open] > summary .vcp-plus,
 }
 
 .vcp-price__now {
-  font-size: 34px;
+  font-size: 46px;
   font-weight: 800;
-  letter-spacing: -0.01em;
-  line-height: 1.1;
+  letter-spacing: -0.015em;
+  line-height: 1.05;
 }
 
 .vcp-price__was {
-  font-size: 18px;
+  font-size: 22px;
   color: #8a8a92;
   text-decoration: line-through;
 }
 
 .vcp-price-note {
-  margin-top: -12px;
-  font-size: 13px;
+  margin-top: -10px;
+  font-size: 14px;
   color: var(--vcp-muted);
 }
 
 .vcp-price-note a {
   color: var(--vcp-muted);
-}
-
-.vcp-stock {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.vcp-stock__dot {
-  flex: none;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--vcp-ok);
-}
-
-.vcp-stock[data-state='other'] .vcp-stock__dot {
-  background: var(--vcp-accent);
-}
-
-.vcp-stock[data-state='out'] .vcp-stock__dot {
-  background: #a3a3aa;
 }
 
 .vcp-variant {
@@ -737,10 +717,10 @@ details[open] > summary .vcp-plus,
   text-decoration: none;
 }
 
-.vcp .vcp-pill--afterpay,
-.vcp .vcp-pill--afterpay:hover {
-  background: #b2fce4;
-  color: #111111;
+.vcp .vcp-pill--zip,
+.vcp .vcp-pill--zip:hover {
+  background: #aa8fff;
+  color: #1a0826;
 }
 
 .vcp .vcp-pill--humm,
@@ -1127,11 +1107,86 @@ details[open] > summary .vcp-plus,
   background: var(--vcp-dims-bg, #17171b);
 }
 
+.vcp-dims__media {
+  position: relative;
+}
+
+.vcp-dims__view {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+}
+
 .vcp-dims__media img,
 .vcp-dims__media .vcp-placeholder {
   width: 100%;
   height: 100%;
   object-fit: var(--vcp-dims-fit, contain);
+}
+
+.vcp-dims__arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #ffffff;
+  color: var(--vcp-ink);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  transform: translateY(-50%);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.vcp-dims__arrow:hover {
+  background: var(--vcp-accent);
+  color: #ffffff;
+}
+
+.vcp-dims__arrow--prev {
+  left: 14px;
+}
+
+.vcp-dims__arrow--next {
+  right: 14px;
+}
+
+.vcp-dims__switch {
+  position: absolute;
+  left: 50%;
+  bottom: 16px;
+  z-index: 2;
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 999px;
+  background: #ffffff;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  transform: translateX(-50%);
+}
+
+.vcp-dims__tab {
+  min-height: 36px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--vcp-ink);
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.vcp-dims__tab[aria-pressed='true'] {
+  background: var(--vcp-ink);
+  color: #ffffff;
 }
 
 .vcp-dims__media .vcp-placeholder {
@@ -1261,7 +1316,7 @@ details[open] > summary .vcp-plus,
   }
 
   .vcp-price__now {
-    font-size: 30px;
+    font-size: 38px;
   }
 
   .vcp-thumbs {
@@ -1318,8 +1373,8 @@ details[open] > summary .vcp-plus,
 /*
   Vulcan commercial product page
   Gallery thumbnails, Shipping/Installation/Warranty dropdowns, the consultant
-  popover, quantity stepper, variant changes (price, stock, Afterpay) and the
-  Why us scroll/hover effects.
+  popover, quantity stepper, variant changes (price, stock badge), the live
+  Trustpilot widget, front/side dimension views and the Why us effects.
   Adding to cart is handled by District's <product-form> element.
 */
 (function () {
@@ -1460,17 +1515,13 @@ details[open] > summary .vcp-plus,
       });
     }
 
-    /* ---------- Quantity, price and stock ---------- */
+    /* ---------- Quantity, price and stock badge ---------- */
 
     var priceEl = root.querySelector('[data-vcp-price]');
     var compareEl = root.querySelector('[data-vcp-compare]');
     var badgeEl = root.querySelector('[data-vcp-badge]');
-    var stockEl = root.querySelector('[data-vcp-stock]');
-    var stockTextEl = root.querySelector('[data-vcp-stock-text]');
     var atcButton = root.querySelector('[data-vcp-atc]');
     var atcLabel = root.querySelector('[data-vcp-atc-label]');
-    var afterpayRow = root.querySelector('[data-vcp-afterpay]');
-    var afterpayAmount = root.querySelector('[data-vcp-afterpay-amount]');
     var hummAmount = root.querySelector('[data-vcp-humm-amount]');
 
     function money(cents) {
@@ -1482,18 +1533,14 @@ details[open] > summary .vcp-plus,
       return isNaN(value) || value < 1 ? 1 : value;
     }
 
-    function stockFor(variant) {
-      if (!variant.available) {
-        return { state: 'out', badge: config.badgeOut, line: config.stockOut };
-      }
+    // Same rules as the Liquid: green in stock, orange pre-order, grey sold out.
+    function badgeFor(variant) {
+      if (!variant.available) return { state: 'out', text: config.badgeOut };
+      if (config.badgeMode === 'pre_order') return { state: 'other', text: config.badgePre };
       var status = (config.splitTitle && titleStatus(variant.title)) || config.productStatus || '';
-      if (!status) {
-        return { state: 'in', badge: config.badgeIn, line: config.stockIn };
-      }
-      if (status.toUpperCase().indexOf('IN STOCK') !== -1) {
-        return { state: 'in', badge: status, line: config.stockIn };
-      }
-      return { state: 'other', badge: status, line: status };
+      if (config.badgeMode === 'in_stock' || !status) return { state: 'in', text: config.badgeIn };
+      if (status.toUpperCase().indexOf('IN STOCK') !== -1) return { state: 'in', text: status };
+      return { state: 'other', text: status };
     }
 
     function render() {
@@ -1507,27 +1554,15 @@ details[open] > summary .vcp-plus,
         if (onSale) compareEl.textContent = money(current.compare_at_price);
       }
 
-      var stock = stockFor(current);
       if (badgeEl) {
-        badgeEl.textContent = stock.badge;
-        badgeEl.setAttribute('data-state', stock.state);
+        var badge = badgeFor(current);
+        badgeEl.textContent = badge.text;
+        badgeEl.setAttribute('data-state', badge.state);
       }
-      if (stockEl) stockEl.setAttribute('data-state', stock.state);
-      if (stockTextEl) stockTextEl.textContent = stock.line;
 
       if (atcButton) {
         atcButton.disabled = !current.available;
-        if (atcLabel) {
-          atcLabel.textContent = current.available
-            ? config.atcLabel + ' — ' + money(price * quantity())
-            : config.soldOutLabel;
-        }
-      }
-
-      if (afterpayRow) {
-        afterpayRow.hidden =
-          price < (config.afterpayMin || 0) || (config.afterpayMax > 0 && price > config.afterpayMax);
-        if (afterpayAmount) afterpayAmount.textContent = money(Math.round(price / 4));
+        if (atcLabel) atcLabel.textContent = current.available ? config.atcLabel : config.soldOutLabel;
       }
 
       if (hummAmount && config.hummPayments > 0) {
@@ -1541,13 +1576,10 @@ details[open] > summary .vcp-plus,
           var step = parseInt(button.getAttribute('data-vcp-qty-step'), 10);
           var max = parseInt(qtyInput.max, 10) || 99;
           qtyInput.value = Math.min(Math.max(quantity() + step, 1), max);
-          render();
         });
       });
-      qtyInput.addEventListener('input', render);
       qtyInput.addEventListener('change', function () {
         qtyInput.value = quantity();
-        render();
       });
     }
 
@@ -1567,6 +1599,80 @@ details[open] > summary .vcp-plus,
         window.history.replaceState({}, '', url.toString());
       });
     }
+  }
+
+  /* ---------- Trustpilot ---------- */
+
+  // The Trustpilot app normally loads Trustpilot's widget script on every
+  // page. If it hasn't by the time the page has loaded, load it ourselves.
+  var TRUSTPILOT_SRC = 'https://widget.trustpilot.com/bootstrap/v5/tp.widget.bootstrap.min.js';
+
+  function initTrustbox(element) {
+    if (!element || element.dataset.vcpReady) return;
+    element.dataset.vcpReady = 'true';
+
+    function load() {
+      if (element.querySelector('iframe')) return;
+      if (window.Trustpilot && typeof window.Trustpilot.loadFromElement === 'function') {
+        window.Trustpilot.loadFromElement(element);
+      } else if (!document.querySelector('script[src*="tp.widget.bootstrap"]')) {
+        var script = document.createElement('script');
+        script.src = TRUSTPILOT_SRC;
+        script.async = true;
+        document.head.appendChild(script);
+      }
+    }
+
+    if (document.readyState === 'complete') {
+      load();
+    } else {
+      window.addEventListener('load', load);
+    }
+  }
+
+  /* ---------- Dimension views (front / side) ---------- */
+
+  function initViews(root) {
+    if (!root || root.dataset.vcpReady) return;
+    root.dataset.vcpReady = 'true';
+
+    var views = Array.prototype.slice.call(root.querySelectorAll('[data-vcp-view]'));
+    var tabs = Array.prototype.slice.call(root.querySelectorAll('[data-vcp-view-go]'));
+    if (views.length < 2) return;
+    var index = 0;
+
+    function show(next) {
+      index = (next + views.length) % views.length;
+      views.forEach(function (view, i) {
+        view.hidden = i !== index;
+      });
+      tabs.forEach(function (tab, i) {
+        tab.setAttribute('aria-pressed', String(i === index));
+      });
+    }
+
+    root.querySelectorAll('[data-vcp-view-step]').forEach(function (button) {
+      button.addEventListener('click', function () {
+        show(index + parseInt(button.getAttribute('data-vcp-view-step'), 10));
+      });
+    });
+    tabs.forEach(function (tab, i) {
+      tab.addEventListener('click', function () {
+        show(i);
+      });
+    });
+
+    // Swipe left/right on touch screens
+    var startX = null;
+    root.addEventListener('touchstart', function (event) {
+      startX = event.touches[0].clientX;
+    }, { passive: true });
+    root.addEventListener('touchend', function (event) {
+      if (startX === null) return;
+      var delta = event.changedTouches[0].clientX - startX;
+      startX = null;
+      if (Math.abs(delta) > 40) show(index + (delta < 0 ? 1 : -1));
+    });
   }
 
   /* ---------- Why us ---------- */
@@ -1626,6 +1732,8 @@ details[open] > summary .vcp-plus,
   function initAll(scope) {
     (scope || document).querySelectorAll('[data-vcp-product]').forEach(initProduct);
     (scope || document).querySelectorAll('[data-vcp-why]').forEach(initWhy);
+    (scope || document).querySelectorAll('[data-vcp-trustbox]').forEach(initTrustbox);
+    (scope || document).querySelectorAll('[data-vcp-views]').forEach(initViews);
   }
 
   window.VulcanCommercial = { init: initAll, formatMoney: formatMoney };
@@ -1664,14 +1772,24 @@ details[open] > summary .vcp-plus,
 <div
   class="vcp vcp-product"
   data-vcp-product
-  style="--vcp-stage-ratio: 4 / 3; --vcp-stage-bg: #ffffff; --vcp-badge-in: #0ADD17;"
+  style="--vcp-stage-ratio: 4 / 3; --vcp-stage-bg: #ffffff; --vcp-badge-in: #0ADD17; --vcp-badge-pre: #DD760A;"
 ><nav class="vcp-wrap vcp-crumbs" aria-label="Breadcrumb">
       <a href="/">Home</a>
       <span aria-hidden="true">/</span><a href="/pages/commercial-fitout-series">Commercial</a>
         <span aria-hidden="true">/</span><span aria-current="page">VULCAN Commercial Leg Extension &amp; Leg Curl Machine – 120kg Weight Stack</span>
     </nav><div class="vcp-wrap vcp-main">
-    <div class="vcp-main__top"><a class="vcp-tp" href="#reviews">
-            <span class="vcp-tp__stars" role="img" aria-label="Rated 5 out of 5 on Trustpilot"><span class="vcp-tp__star">
+    <div class="vcp-main__top"><div
+            class="trustpilot-widget vcp-tp-live vcp-tp-live--mini"
+            data-locale="en-AU"
+            data-template-id="53aa8807dec7e10d38f59f32"
+            data-businessunit-id="6022a7fcf1069f000155785b"
+            data-style-height="150px"
+            data-style-width="100%"
+            data-theme="light"
+            data-vcp-trustbox
+          >
+            <a class="vcp-tp" href="https://au.trustpilot.com/review/vulcanfitness.com.au" target="_blank" rel="noopener">
+            <span class="vcp-tp__stars" role="img" aria-label="Rated 4.9 out of 5 on Trustpilot"><span class="vcp-tp__star">
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="#ffffff" aria-hidden="true" focusable="false">
                     <path d="M12 2.5l2.9 6.3 6.9.7-5.2 4.6 1.5 6.8L12 17.4l-6.1 3.5 1.5-6.8L2.2 9.5l6.9-.7z"></path>
                   </svg>
@@ -1693,8 +1811,11 @@ details[open] > summary .vcp-plus,
                   </svg>
                 </span></span>
             <span class="vcp-tp__count">
-              <strong>750+ reviews</strong> on Trustpilot
-            </span><span class="vcp-tp__cta">Read reviews →</span></a><div class="vcp-heading">
+              <strong>TrustScore 4.9</strong>
+              | 763 reviews on Trustpilot
+            </span>
+          </a>
+          </div><div class="vcp-heading">
         <h1 class="vcp-title">VULCAN Commercial Leg Extension &amp; Leg Curl Machine – 120kg Weight Stack</h1><div class="vcp-blurb"><p>Dual-function quad and hamstring station built for floors that never get a day off.</p></div></div>
 
       <div class="vcp-gallery" data-vcp-gallery>
@@ -1766,7 +1887,8 @@ details[open] > summary .vcp-plus,
               data-vcp-tab
               
             >
-              <span class="vcp-tab__label"><span class="vcp-emoji" aria-hidden="true">🚚</span>Shipping
+              <span class="vcp-tab__label"><span class="vcp-tab__icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M2 6h11v10H2z"></path><path d="M13 9h4.5L21 12.5V16h-8"></path><circle cx="6" cy="18" r="1.8"></circle><circle cx="17" cy="18" r="1.8"></circle></svg>
+</span>Shipping
               </span>
               <span class="vcp-plus" aria-hidden="true">+</span>
             </button>
@@ -1787,7 +1909,8 @@ details[open] > summary .vcp-plus,
               data-vcp-tab
               
             >
-              <span class="vcp-tab__label"><span class="vcp-emoji" aria-hidden="true">🛠️</span>Installation
+              <span class="vcp-tab__label"><span class="vcp-tab__icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4z"></path></svg>
+</span>Installation
               </span>
               <span class="vcp-plus" aria-hidden="true">+</span>
             </button>
@@ -1808,7 +1931,8 @@ details[open] > summary .vcp-plus,
               data-vcp-tab
               
             >
-              <span class="vcp-tab__label"><span class="vcp-emoji" aria-hidden="true">🛡️</span>Warranty
+              <span class="vcp-tab__label"><span class="vcp-tab__icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"></path></svg>
+</span>Warranty
               </span>
               <span class="vcp-plus" aria-hidden="true">+</span>
             </button>
@@ -1825,21 +1949,16 @@ details[open] > summary .vcp-plus,
       <div class="vcp-price">
         <span class="vcp-price__now" data-vcp-price>$3,499.00</span>
         <s class="vcp-price__was" data-vcp-compare hidden>$3,499.00</s>
-      </div><div class="vcp-price-note">Tax included. Shipping calculated at checkout.</div><div class="vcp-stock" data-vcp-stock data-state="in">
-        <span class="vcp-stock__dot" aria-hidden="true"></span>
-        <span data-vcp-stock-text>In stock — dispatches from Brisbane</span>
-      </div><div class="vcp-bnpl"><div class="vcp-bnpl__row" data-vcp-afterpay >
-              <span class="vcp-bnpl__text">
-                4 interest-free payments of <strong data-vcp-afterpay-amount>$874.75</strong>
-              </span>
+      </div><div class="vcp-price-note">Tax included. Shipping calculated at checkout.</div><div class="vcp-bnpl"><div class="vcp-bnpl__row">
+              <span class="vcp-bnpl__text">Own it now, pay later</span>
               <a
-                class="vcp-pill vcp-pill--afterpay"
-                href="https://www.afterpay.com/en-AU/how-it-works"
+                class="vcp-pill vcp-pill--zip"
+                href="https://zip.co/au"
                 target="_blank"
                 rel="noopener"
-                aria-label="Afterpay — how it works (opens in a new tab)"
+                aria-label="Zip (opens in a new tab)"
               >
-                Afterpay
+                Zip
               </a>
             </div><div class="vcp-bnpl__row"><div class="vcp-humm-widget">
                   
@@ -1873,7 +1992,7 @@ details[open] > summary .vcp-plus,
               data-vcp-atc
               
             >
-              <span data-vcp-atc-label>Add to cart — $3,499.00</span>
+              <span data-vcp-atc-label>Add to cart</span>
             </button>
           </div><div class="vcp-dynamic-checkout"><div class="shopify-payment-button"><button type="button" class="shopify-payment-button__button preview-shop-pay">Buy with <b>Shop</b><span>Pay</span></button><button type="button" class="shopify-payment-button__more-options">More payment options</button></div></div></form></product-form><div class="vcp-guarantees"><details class="vcp-guarantee" >
               <summary>
@@ -1910,14 +2029,12 @@ details[open] > summary .vcp-plus,
       "moneyFormat": "${{amount}}",
       "splitTitle": true,
       "productStatus": "IN STOCK",
+      "badgeMode": "auto",
       "badgeIn": "IN STOCK",
+      "badgePre": "PRE-ORDER",
       "badgeOut": "SOLD OUT",
-      "stockIn": "In stock — dispatches from Brisbane",
-      "stockOut": "Sold out — contact us for the next shipment",
       "atcLabel": "Add to cart",
       "soldOutLabel": "Sold out",
-      "afterpayMin": 100,
-      "afterpayMax": 400000,
       "hummPayments": 0,
       "variants": [{"id":42457685458967,"title":"Default Title","price":349900,"compare_at_price":349900,"available":true,"featured_media":null}]
     }
@@ -2236,10 +2353,15 @@ details[open] > summary .vcp-plus,
   font-weight: 700;
 }
 
-.vcp-tp__cta {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--vcp-accent-ink);
+/* Live Trustpilot widget; the strip inside shows until it loads */
+.vcp-tp-live {
+  align-self: flex-start;
+  width: 100%;
+  max-width: 420px;
+}
+
+.vcp-tp-live--mini:has(iframe) {
+  max-width: 260px;
 }
 
 .vcp-heading {
@@ -2313,7 +2435,7 @@ details[open] > summary .vcp-plus,
 }
 
 .vcp-badge[data-state='other'] {
-  background: var(--vcp-accent);
+  background: var(--vcp-badge-pre, #dd760a);
 }
 
 .vcp-badge[data-state='out'] {
@@ -2465,10 +2587,9 @@ details[open] > summary .vcp-plus,
   gap: 8px;
 }
 
-.vcp-emoji {
-  font-size: 17px;
-  line-height: 1;
-  font-weight: 400;
+.vcp-tab__icon {
+  display: flex;
+  color: var(--vcp-ink);
 }
 
 .vcp-tab-panel {
@@ -2525,50 +2646,26 @@ details[open] > summary .vcp-plus,
 }
 
 .vcp-price__now {
-  font-size: 34px;
+  font-size: 46px;
   font-weight: 800;
-  letter-spacing: -0.01em;
-  line-height: 1.1;
+  letter-spacing: -0.015em;
+  line-height: 1.05;
 }
 
 .vcp-price__was {
-  font-size: 18px;
+  font-size: 22px;
   color: #8a8a92;
   text-decoration: line-through;
 }
 
 .vcp-price-note {
-  margin-top: -12px;
-  font-size: 13px;
+  margin-top: -10px;
+  font-size: 14px;
   color: var(--vcp-muted);
 }
 
 .vcp-price-note a {
   color: var(--vcp-muted);
-}
-
-.vcp-stock {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.vcp-stock__dot {
-  flex: none;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--vcp-ok);
-}
-
-.vcp-stock[data-state='other'] .vcp-stock__dot {
-  background: var(--vcp-accent);
-}
-
-.vcp-stock[data-state='out'] .vcp-stock__dot {
-  background: #a3a3aa;
 }
 
 .vcp-variant {
@@ -2638,10 +2735,10 @@ details[open] > summary .vcp-plus,
   text-decoration: none;
 }
 
-.vcp .vcp-pill--afterpay,
-.vcp .vcp-pill--afterpay:hover {
-  background: #b2fce4;
-  color: #111111;
+.vcp .vcp-pill--zip,
+.vcp .vcp-pill--zip:hover {
+  background: #aa8fff;
+  color: #1a0826;
 }
 
 .vcp .vcp-pill--humm,
@@ -3028,11 +3125,86 @@ details[open] > summary .vcp-plus,
   background: var(--vcp-dims-bg, #17171b);
 }
 
+.vcp-dims__media {
+  position: relative;
+}
+
+.vcp-dims__view {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+}
+
 .vcp-dims__media img,
 .vcp-dims__media .vcp-placeholder {
   width: 100%;
   height: 100%;
   object-fit: var(--vcp-dims-fit, contain);
+}
+
+.vcp-dims__arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #ffffff;
+  color: var(--vcp-ink);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  transform: translateY(-50%);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.vcp-dims__arrow:hover {
+  background: var(--vcp-accent);
+  color: #ffffff;
+}
+
+.vcp-dims__arrow--prev {
+  left: 14px;
+}
+
+.vcp-dims__arrow--next {
+  right: 14px;
+}
+
+.vcp-dims__switch {
+  position: absolute;
+  left: 50%;
+  bottom: 16px;
+  z-index: 2;
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 999px;
+  background: #ffffff;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  transform: translateX(-50%);
+}
+
+.vcp-dims__tab {
+  min-height: 36px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--vcp-ink);
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.vcp-dims__tab[aria-pressed='true'] {
+  background: var(--vcp-ink);
+  color: #ffffff;
 }
 
 .vcp-dims__media .vcp-placeholder {
@@ -3162,7 +3334,7 @@ details[open] > summary .vcp-plus,
   }
 
   .vcp-price__now {
-    font-size: 30px;
+    font-size: 38px;
   }
 
   .vcp-thumbs {
@@ -3551,10 +3723,15 @@ details[open] > summary .vcp-plus,
   font-weight: 700;
 }
 
-.vcp-tp__cta {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--vcp-accent-ink);
+/* Live Trustpilot widget; the strip inside shows until it loads */
+.vcp-tp-live {
+  align-self: flex-start;
+  width: 100%;
+  max-width: 420px;
+}
+
+.vcp-tp-live--mini:has(iframe) {
+  max-width: 260px;
 }
 
 .vcp-heading {
@@ -3628,7 +3805,7 @@ details[open] > summary .vcp-plus,
 }
 
 .vcp-badge[data-state='other'] {
-  background: var(--vcp-accent);
+  background: var(--vcp-badge-pre, #dd760a);
 }
 
 .vcp-badge[data-state='out'] {
@@ -3780,10 +3957,9 @@ details[open] > summary .vcp-plus,
   gap: 8px;
 }
 
-.vcp-emoji {
-  font-size: 17px;
-  line-height: 1;
-  font-weight: 400;
+.vcp-tab__icon {
+  display: flex;
+  color: var(--vcp-ink);
 }
 
 .vcp-tab-panel {
@@ -3840,50 +4016,26 @@ details[open] > summary .vcp-plus,
 }
 
 .vcp-price__now {
-  font-size: 34px;
+  font-size: 46px;
   font-weight: 800;
-  letter-spacing: -0.01em;
-  line-height: 1.1;
+  letter-spacing: -0.015em;
+  line-height: 1.05;
 }
 
 .vcp-price__was {
-  font-size: 18px;
+  font-size: 22px;
   color: #8a8a92;
   text-decoration: line-through;
 }
 
 .vcp-price-note {
-  margin-top: -12px;
-  font-size: 13px;
+  margin-top: -10px;
+  font-size: 14px;
   color: var(--vcp-muted);
 }
 
 .vcp-price-note a {
   color: var(--vcp-muted);
-}
-
-.vcp-stock {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.vcp-stock__dot {
-  flex: none;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--vcp-ok);
-}
-
-.vcp-stock[data-state='other'] .vcp-stock__dot {
-  background: var(--vcp-accent);
-}
-
-.vcp-stock[data-state='out'] .vcp-stock__dot {
-  background: #a3a3aa;
 }
 
 .vcp-variant {
@@ -3953,10 +4105,10 @@ details[open] > summary .vcp-plus,
   text-decoration: none;
 }
 
-.vcp .vcp-pill--afterpay,
-.vcp .vcp-pill--afterpay:hover {
-  background: #b2fce4;
-  color: #111111;
+.vcp .vcp-pill--zip,
+.vcp .vcp-pill--zip:hover {
+  background: #aa8fff;
+  color: #1a0826;
 }
 
 .vcp .vcp-pill--humm,
@@ -4343,11 +4495,86 @@ details[open] > summary .vcp-plus,
   background: var(--vcp-dims-bg, #17171b);
 }
 
+.vcp-dims__media {
+  position: relative;
+}
+
+.vcp-dims__view {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+}
+
 .vcp-dims__media img,
 .vcp-dims__media .vcp-placeholder {
   width: 100%;
   height: 100%;
   object-fit: var(--vcp-dims-fit, contain);
+}
+
+.vcp-dims__arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #ffffff;
+  color: var(--vcp-ink);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  transform: translateY(-50%);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.vcp-dims__arrow:hover {
+  background: var(--vcp-accent);
+  color: #ffffff;
+}
+
+.vcp-dims__arrow--prev {
+  left: 14px;
+}
+
+.vcp-dims__arrow--next {
+  right: 14px;
+}
+
+.vcp-dims__switch {
+  position: absolute;
+  left: 50%;
+  bottom: 16px;
+  z-index: 2;
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 999px;
+  background: #ffffff;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  transform: translateX(-50%);
+}
+
+.vcp-dims__tab {
+  min-height: 36px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--vcp-ink);
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.vcp-dims__tab[aria-pressed='true'] {
+  background: var(--vcp-ink);
+  color: #ffffff;
 }
 
 .vcp-dims__media .vcp-placeholder {
@@ -4477,7 +4704,7 @@ details[open] > summary .vcp-plus,
   }
 
   .vcp-price__now {
-    font-size: 30px;
+    font-size: 38px;
   }
 
   .vcp-thumbs {
@@ -4533,11 +4760,11 @@ details[open] > summary .vcp-plus,
 
 <div class="vcp vcp-why" data-vcp-why>
   <div class="vcp-wrap vcp-why__inner">
-    <div class="vcp-why__intro"><h2 class="vcp-h2">Why us?</h2><p class="vcp-why__lede">Commercial fit-outs priced openly, shipped and installed from Brisbane.</p></div><div class="vcp-why__grid"><div class="vcp-why__item" data-vcp-why-item ><span class="vcp-why__num" aria-hidden="true">01</span><h3>Ranges of motion</h3>
+    <div class="vcp-why__intro"><h2 class="vcp-h2">Why us?</h2><p class="vcp-why__lede">Commercial fit-outs priced openly, shipped and installed from Brisbane.</p></div><div class="vcp-why__grid"><div class="vcp-why__item" data-vcp-why-item ><h3>Ranges of motion</h3>
             <div class="vcp-rte"><p>Leg extension and seated leg curl on one frame, so quads and hamstrings both get a full range of motion without a second machine.</p></div>
-          </div><div class="vcp-why__item" data-vcp-why-item ><span class="vcp-why__num" aria-hidden="true">02</span><h3>Easy to use</h3>
+          </div><div class="vcp-why__item" data-vcp-why-item ><h3>Easy to use</h3>
             <div class="vcp-rte"><p>Multiple settings for the foot, leg and seat padding put every user — from rehab clients to athletes — in the right position.</p></div>
-          </div><div class="vcp-why__item" data-vcp-why-item ><span class="vcp-why__num" aria-hidden="true">03</span><h3>Weight Stack &amp; Ratio</h3>
+          </div><div class="vcp-why__item" data-vcp-why-item ><h3>Weight Stack &amp; Ratio</h3>
             <div class="vcp-rte"><p>A 120 kg stack in 5 kg steps with a 1:1 ratio, so the number on the pin is the load you move.</p></div>
           </div></div></div>
 </div>
@@ -4854,10 +5081,15 @@ details[open] > summary .vcp-plus,
   font-weight: 700;
 }
 
-.vcp-tp__cta {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--vcp-accent-ink);
+/* Live Trustpilot widget; the strip inside shows until it loads */
+.vcp-tp-live {
+  align-self: flex-start;
+  width: 100%;
+  max-width: 420px;
+}
+
+.vcp-tp-live--mini:has(iframe) {
+  max-width: 260px;
 }
 
 .vcp-heading {
@@ -4931,7 +5163,7 @@ details[open] > summary .vcp-plus,
 }
 
 .vcp-badge[data-state='other'] {
-  background: var(--vcp-accent);
+  background: var(--vcp-badge-pre, #dd760a);
 }
 
 .vcp-badge[data-state='out'] {
@@ -5083,10 +5315,9 @@ details[open] > summary .vcp-plus,
   gap: 8px;
 }
 
-.vcp-emoji {
-  font-size: 17px;
-  line-height: 1;
-  font-weight: 400;
+.vcp-tab__icon {
+  display: flex;
+  color: var(--vcp-ink);
 }
 
 .vcp-tab-panel {
@@ -5143,50 +5374,26 @@ details[open] > summary .vcp-plus,
 }
 
 .vcp-price__now {
-  font-size: 34px;
+  font-size: 46px;
   font-weight: 800;
-  letter-spacing: -0.01em;
-  line-height: 1.1;
+  letter-spacing: -0.015em;
+  line-height: 1.05;
 }
 
 .vcp-price__was {
-  font-size: 18px;
+  font-size: 22px;
   color: #8a8a92;
   text-decoration: line-through;
 }
 
 .vcp-price-note {
-  margin-top: -12px;
-  font-size: 13px;
+  margin-top: -10px;
+  font-size: 14px;
   color: var(--vcp-muted);
 }
 
 .vcp-price-note a {
   color: var(--vcp-muted);
-}
-
-.vcp-stock {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.vcp-stock__dot {
-  flex: none;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--vcp-ok);
-}
-
-.vcp-stock[data-state='other'] .vcp-stock__dot {
-  background: var(--vcp-accent);
-}
-
-.vcp-stock[data-state='out'] .vcp-stock__dot {
-  background: #a3a3aa;
 }
 
 .vcp-variant {
@@ -5256,10 +5463,10 @@ details[open] > summary .vcp-plus,
   text-decoration: none;
 }
 
-.vcp .vcp-pill--afterpay,
-.vcp .vcp-pill--afterpay:hover {
-  background: #b2fce4;
-  color: #111111;
+.vcp .vcp-pill--zip,
+.vcp .vcp-pill--zip:hover {
+  background: #aa8fff;
+  color: #1a0826;
 }
 
 .vcp .vcp-pill--humm,
@@ -5646,11 +5853,86 @@ details[open] > summary .vcp-plus,
   background: var(--vcp-dims-bg, #17171b);
 }
 
+.vcp-dims__media {
+  position: relative;
+}
+
+.vcp-dims__view {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+}
+
 .vcp-dims__media img,
 .vcp-dims__media .vcp-placeholder {
   width: 100%;
   height: 100%;
   object-fit: var(--vcp-dims-fit, contain);
+}
+
+.vcp-dims__arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #ffffff;
+  color: var(--vcp-ink);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  transform: translateY(-50%);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.vcp-dims__arrow:hover {
+  background: var(--vcp-accent);
+  color: #ffffff;
+}
+
+.vcp-dims__arrow--prev {
+  left: 14px;
+}
+
+.vcp-dims__arrow--next {
+  right: 14px;
+}
+
+.vcp-dims__switch {
+  position: absolute;
+  left: 50%;
+  bottom: 16px;
+  z-index: 2;
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 999px;
+  background: #ffffff;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  transform: translateX(-50%);
+}
+
+.vcp-dims__tab {
+  min-height: 36px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--vcp-ink);
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.vcp-dims__tab[aria-pressed='true'] {
+  background: var(--vcp-ink);
+  color: #ffffff;
 }
 
 .vcp-dims__media .vcp-placeholder {
@@ -5780,7 +6062,7 @@ details[open] > summary .vcp-plus,
   }
 
   .vcp-price__now {
-    font-size: 30px;
+    font-size: 38px;
   }
 
   .vcp-thumbs {
@@ -5833,12 +6115,33 @@ details[open] > summary .vcp-plus,
 
 </style>
 
+
 <div
   class="vcp vcp-dims"
   id="dimensions"
   style="--vcp-dims-bg: #17171b; --vcp-dims-fit: contain;"
 >
-  <div class="vcp-wrap vcp-dims__inner"><h2 class="vcp-h2">Dimensions &amp; specifications</h2><div class="vcp-dims__grid"><dl class="vcp-specs"><div class="vcp-specs__row" >
+  <div class="vcp-wrap vcp-dims__inner"><h2 class="vcp-h2">Dimensions &amp; specifications</h2><div class="vcp-dims__grid vcp-dims__grid--media"><div class="vcp-dims__media" data-vcp-views><figure class="vcp-dims__view" data-vcp-view >
+                <img src="https://cdn.shopify.com/s/files/1/0268/0307/7143/files/Leg1_e94cdcc5-bb09-4ebd-85a0-fd08d8dd8eba.png?v=1774597747&amp;width=1400" loading="lazy" srcset="https://cdn.shopify.com/s/files/1/0268/0307/7143/files/Leg1_e94cdcc5-bb09-4ebd-85a0-fd08d8dd8eba.png?v=1774597747&amp;width=600 600w, https://cdn.shopify.com/s/files/1/0268/0307/7143/files/Leg1_e94cdcc5-bb09-4ebd-85a0-fd08d8dd8eba.png?v=1774597747&amp;width=900 900w, https://cdn.shopify.com/s/files/1/0268/0307/7143/files/Leg1_e94cdcc5-bb09-4ebd-85a0-fd08d8dd8eba.png?v=1774597747&amp;width=1200 1200w, https://cdn.shopify.com/s/files/1/0268/0307/7143/files/Leg1_e94cdcc5-bb09-4ebd-85a0-fd08d8dd8eba.png?v=1774597747&amp;width=1400 1400w" sizes="(min-width: 990px) 600px, calc(100vw - 32px)" alt="Front view">
+              </figure><figure class="vcp-dims__view" data-vcp-view hidden>
+                <img src="https://cdn.shopify.com/s/files/1/0268/0307/7143/files/Leg5.png?v=1774597747&amp;width=1400" loading="lazy" srcset="https://cdn.shopify.com/s/files/1/0268/0307/7143/files/Leg5.png?v=1774597747&amp;width=600 600w, https://cdn.shopify.com/s/files/1/0268/0307/7143/files/Leg5.png?v=1774597747&amp;width=900 900w, https://cdn.shopify.com/s/files/1/0268/0307/7143/files/Leg5.png?v=1774597747&amp;width=1200 1200w, https://cdn.shopify.com/s/files/1/0268/0307/7143/files/Leg5.png?v=1774597747&amp;width=1400 1400w" sizes="(min-width: 990px) 600px, calc(100vw - 32px)" alt="Side view">
+              </figure><button type="button" class="vcp-dims__arrow vcp-dims__arrow--prev" data-vcp-view-step="-1" aria-label="Previous view">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M15 18l-6-6 6-6"></path></svg>
+            </button>
+            <button type="button" class="vcp-dims__arrow vcp-dims__arrow--next" data-vcp-view-step="1" aria-label="Next view">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 18l6-6-6-6"></path></svg>
+            </button>
+            <div class="vcp-dims__switch" role="group" aria-label="Dimension views"><button
+                    type="button"
+                    class="vcp-dims__tab"
+                    data-vcp-view-go
+                    aria-pressed="true"
+                  >Front view</button><button
+                    type="button"
+                    class="vcp-dims__tab"
+                    data-vcp-view-go
+                    aria-pressed="false"
+                  >Side view</button></div></div><dl class="vcp-specs"><div class="vcp-specs__row" >
               <dt>Weight stack</dt>
               <dd>120 kg (5 kg increments)</dd>
             </div><div class="vcp-specs__row" >
@@ -5868,1302 +6171,6 @@ details[open] > summary .vcp-plus,
             </div></dl></div>
   </div>
 </div>
-
-
-</section>
-<section class="shopify-section"><style>
-/*
-  Vulcan commercial product page
-  Shared styles for the vulcan-* sections. Everything is scoped under .vcp so
-  it can sit inside the District theme without touching other pages.
-*/
-
-.vcp {
-  --vcp-ink: #111111;
-  --vcp-ink-2: #3b3b40;
-  --vcp-muted: #5c5c62;
-  --vcp-line: #ebe7df;
-  --vcp-line-2: #e3ded4;
-  --vcp-sand: #f5f2ec;
-  --vcp-accent: #dd760a;
-  --vcp-accent-hover: #c4680a;
-  --vcp-accent-ink: #b85f06;
-  --vcp-dark: #17171b;
-  --vcp-ok: #2e9e5b;
-  --vcp-radius: 2px;
-  --vcp-gutter: 24px;
-  color: var(--vcp-ink);
-  background: #ffffff;
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-  text-align: left;
-}
-
-.vcp *,
-.vcp *::before,
-.vcp *::after {
-  box-sizing: border-box;
-}
-
-/* Neutralise theme heading/button styles inside our sections. :where() keeps
-   these at class-level specificity so the component rules below win. */
-.vcp :where(h1, h2, h3, h4, p, ul, ol, dl, dd, figure) {
-  margin: 0;
-}
-
-.vcp :where(h1, h2, h3, h4, button, input, select, summary) {
-  font-family: inherit;
-  text-transform: none;
-  letter-spacing: normal;
-  color: inherit;
-}
-
-.vcp a {
-  color: var(--vcp-ink);
-}
-
-.vcp a:hover {
-  color: var(--vcp-accent-ink);
-}
-
-.vcp img {
-  max-width: 100%;
-  height: auto;
-}
-
-.vcp summary {
-  list-style: none;
-  cursor: pointer;
-}
-
-.vcp summary::-webkit-details-marker {
-  display: none;
-}
-
-.vcp :is(button, a, summary, input, select):focus-visible {
-  outline: 3px solid var(--vcp-accent);
-  outline-offset: 3px;
-}
-
-.vcp [hidden] {
-  display: none !important;
-}
-
-.vcp-visually-hidden {
-  position: absolute !important;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
-  border: 0;
-}
-
-.vcp-wrap {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding-left: var(--vcp-gutter);
-  padding-right: var(--vcp-gutter);
-}
-
-.vcp-h2 {
-  font-size: 34px;
-  line-height: 1.15;
-  font-weight: 700;
-}
-
-.vcp-plus {
-  flex: none;
-  font-size: 22px;
-  font-weight: 400;
-  line-height: 1;
-  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-details[open] > summary .vcp-plus,
-[aria-expanded='true'] .vcp-plus {
-  transform: rotate(45deg);
-}
-
-/* ---------- Rich text (Shopify description, block copy) ---------- */
-
-.vcp-rte {
-  font-size: 15px;
-  line-height: 1.65;
-  color: var(--vcp-ink-2);
-}
-
-.vcp-rte > * + * {
-  margin-top: 0.85em;
-}
-
-.vcp-rte :is(h2, h3, h4) {
-  color: var(--vcp-ink);
-  font-weight: 700;
-  line-height: 1.25;
-  margin-top: 1.4em;
-}
-
-.vcp-rte h2 {
-  font-size: 24px;
-}
-
-.vcp-rte h3 {
-  font-size: 20px;
-}
-
-.vcp-rte h4 {
-  font-size: 17px;
-}
-
-.vcp-rte :is(ul, ol) {
-  padding-left: 1.25em;
-}
-
-.vcp-rte ul {
-  list-style: disc;
-}
-
-.vcp-rte ol {
-  list-style: decimal;
-}
-
-.vcp-rte li + li {
-  margin-top: 0.5em;
-}
-
-.vcp-rte li > p {
-  margin: 0;
-}
-
-.vcp-rte strong {
-  color: var(--vcp-ink);
-}
-
-.vcp-rte a {
-  color: var(--vcp-accent-ink);
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-
-.vcp-rte img {
-  display: block;
-  margin: 1.2em 0;
-}
-
-.vcp-rte table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.vcp-rte :is(td, th) {
-  padding: 8px 10px;
-  border: 1px solid var(--vcp-line);
-  text-align: left;
-}
-
-/* ---------- Main product ---------- */
-
-.vcp-crumbs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  padding-top: 18px;
-  font-size: 15px;
-  color: var(--vcp-muted);
-}
-
-.vcp-crumbs a {
-  color: var(--vcp-muted);
-  text-decoration: none;
-}
-
-.vcp-crumbs a:hover {
-  color: var(--vcp-accent-ink);
-  text-decoration: underline;
-}
-
-.vcp-crumbs [aria-current] {
-  color: var(--vcp-ink);
-}
-
-.vcp-main {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  grid-template-areas: 'top' 'buy' 'bottom';
-  gap: 24px;
-  padding-top: 20px;
-  padding-bottom: 64px;
-}
-
-.vcp-main__top {
-  grid-area: top;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  min-width: 0;
-}
-
-.vcp-main__bottom {
-  grid-area: bottom;
-  min-width: 0;
-}
-
-.vcp-buybox {
-  grid-area: buy;
-  min-width: 0;
-}
-
-@media (min-width: 1000px) {
-  .vcp-main {
-    grid-template-columns: minmax(0, 1fr) minmax(360px, 440px);
-    grid-template-rows: auto 1fr;
-    grid-template-areas: 'top buy' 'bottom buy';
-    column-gap: 48px;
-    row-gap: 18px;
-  }
-
-  .vcp-buybox {
-    position: sticky;
-    top: 24px;
-    align-self: start;
-  }
-}
-
-/* Trustpilot strip */
-.vcp-tp {
-  display: inline-flex;
-  align-self: flex-start;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px 12px;
-  padding: 10px 14px;
-  border: 1px solid var(--vcp-line);
-  border-radius: var(--vcp-radius);
-  background: #ffffff;
-  text-decoration: none;
-}
-
-.vcp-tp:hover {
-  border-color: #d9d4ca;
-}
-
-.vcp-tp__stars {
-  display: flex;
-  gap: 3px;
-}
-
-.vcp-tp__star {
-  width: 22px;
-  height: 22px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #00b67a;
-}
-
-.vcp-tp__star--half {
-  background: linear-gradient(90deg, #00b67a 50%, #dcdce6 50%);
-}
-
-.vcp-tp__star--empty {
-  background: #dcdce6;
-}
-
-.vcp-tp__count {
-  font-size: 15px;
-  color: var(--vcp-ink);
-}
-
-.vcp-tp__count strong {
-  font-weight: 700;
-}
-
-.vcp-tp__cta {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--vcp-accent-ink);
-}
-
-.vcp-heading {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.vcp-title {
-  font-size: 40px;
-  line-height: 1.1;
-  font-weight: 700;
-  letter-spacing: -0.015em;
-}
-
-.vcp-blurb {
-  max-width: 620px;
-  font-size: 18px;
-  line-height: 1.55;
-  color: var(--vcp-ink-2);
-}
-
-/* Gallery */
-.vcp-stage {
-  position: relative;
-  aspect-ratio: var(--vcp-stage-ratio, 4 / 3);
-  background: var(--vcp-stage-bg, #ffffff);
-  border: 1px solid var(--vcp-line);
-  border-radius: var(--vcp-radius);
-}
-
-.vcp-stage__item {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  border-radius: var(--vcp-radius);
-}
-
-.vcp-stage__item :is(img, video, iframe, model-viewer, .vcp-placeholder) {
-  display: block;
-  width: 100%;
-  height: 100%;
-  max-height: none;
-  object-fit: contain;
-  border: 0;
-}
-
-.vcp-stage__item .vcp-placeholder {
-  fill: #c9c4ba;
-  background: var(--vcp-sand);
-}
-
-.vcp-badge {
-  position: absolute;
-  top: 16px;
-  left: 16px;
-  z-index: 2;
-  max-width: calc(100% - 32px);
-  padding: 6px 10px;
-  border-radius: var(--vcp-radius);
-  color: #ffffff;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  line-height: 1.3;
-  text-transform: uppercase;
-  background: var(--vcp-badge-in, #0add17);
-}
-
-.vcp-badge[data-state='other'] {
-  background: var(--vcp-accent);
-}
-
-.vcp-badge[data-state='out'] {
-  background: var(--vcp-muted);
-}
-
-.vcp-consult {
-  position: absolute;
-  left: 16px;
-  bottom: 16px;
-  z-index: 3;
-}
-
-.vcp-consult > summary {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 44px;
-  padding: 0 16px;
-  background: #ffffff;
-  color: var(--vcp-ink);
-  border-radius: var(--vcp-radius);
-  box-shadow: 0 0 0 1px var(--vcp-line), 0 4px 14px rgba(0, 0, 0, 0.12);
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.vcp-consult .vcp-plus {
-  font-size: 18px;
-}
-
-.vcp-consult__panel {
-  position: absolute;
-  left: 0;
-  bottom: 52px;
-  width: 290px;
-  max-width: calc(100vw - 48px);
-  display: flex;
-  flex-direction: column;
-  background: #ffffff;
-  border-radius: var(--vcp-radius);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
-}
-
-.vcp-consult__panel a {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-height: 56px;
-  padding: 8px 16px;
-  color: var(--vcp-ink);
-  text-decoration: none;
-  font-size: 14px;
-  line-height: 1.35;
-}
-
-.vcp-consult__panel a + a {
-  border-top: 1px solid var(--vcp-line);
-}
-
-.vcp-consult__panel a:hover {
-  background: var(--vcp-sand);
-  color: var(--vcp-ink);
-}
-
-.vcp-consult__panel svg {
-  flex: none;
-  color: var(--vcp-accent);
-}
-
-.vcp-consult__sub {
-  display: block;
-  color: var(--vcp-muted);
-  word-break: break-word;
-}
-
-.vcp-thumbs {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.vcp-thumb {
-  position: relative;
-  aspect-ratio: 1 / 1;
-  min-height: 44px;
-  padding: 0;
-  border: 2px solid transparent;
-  border-radius: var(--vcp-radius);
-  background: var(--vcp-stage-bg, #ffffff);
-  box-shadow: inset 0 0 0 1px var(--vcp-line);
-  cursor: pointer;
-  overflow: hidden;
-}
-
-.vcp-thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-.vcp-thumb[aria-current='true'] {
-  border-color: var(--vcp-accent);
-  box-shadow: none;
-}
-
-.vcp-thumb__play {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #ffffff;
-  background: rgba(17, 17, 17, 0.35);
-}
-
-/* Shipping / Installation / Warranty dropdowns */
-.vcp-tabs {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 10px;
-}
-
-.vcp-tab {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  width: 100%;
-  min-height: 52px;
-  padding: 0 16px;
-  border: 0;
-  border-radius: var(--vcp-radius);
-  background: var(--vcp-sand);
-  color: var(--vcp-ink);
-  font-size: 15px;
-  font-weight: 700;
-  text-align: left;
-  cursor: pointer;
-}
-
-.vcp-tab:hover {
-  background: #efe9df;
-}
-
-.vcp-tab__label {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.vcp-emoji {
-  font-size: 17px;
-  line-height: 1;
-  font-weight: 400;
-}
-
-.vcp-tab-panel {
-  margin-top: -10px;
-  padding: 2px 16px 16px;
-  border-radius: 0 0 var(--vcp-radius) var(--vcp-radius);
-  background: var(--vcp-sand);
-  font-size: 14px;
-}
-
-.vcp-tab[aria-expanded='true'] {
-  border-radius: var(--vcp-radius) var(--vcp-radius) 0 0;
-}
-
-@media (min-width: 750px) {
-  .vcp-tabs {
-    grid-template-columns: repeat(var(--vcp-tab-count, 3), minmax(0, 1fr));
-  }
-
-  .vcp-tab {
-    grid-row: 1;
-  }
-
-  .vcp-tab-panel {
-    grid-row: 2;
-    grid-column: 1 / -1;
-    margin-top: 0;
-    padding: 18px 20px;
-    border-radius: var(--vcp-radius);
-  }
-
-  .vcp-tab[aria-expanded='true'] {
-    border-radius: var(--vcp-radius);
-    box-shadow: inset 0 -3px 0 var(--vcp-accent);
-  }
-}
-
-/* Buy box */
-.vcp-buybox {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  padding: 28px;
-  border: 1px solid var(--vcp-line);
-  border-radius: var(--vcp-radius);
-  background: #ffffff;
-}
-
-.vcp-price {
-  display: flex;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: 4px 12px;
-}
-
-.vcp-price__now {
-  font-size: 34px;
-  font-weight: 800;
-  letter-spacing: -0.01em;
-  line-height: 1.1;
-}
-
-.vcp-price__was {
-  font-size: 18px;
-  color: #8a8a92;
-  text-decoration: line-through;
-}
-
-.vcp-price-note {
-  margin-top: -12px;
-  font-size: 13px;
-  color: var(--vcp-muted);
-}
-
-.vcp-price-note a {
-  color: var(--vcp-muted);
-}
-
-.vcp-stock {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.vcp-stock__dot {
-  flex: none;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--vcp-ok);
-}
-
-.vcp-stock[data-state='other'] .vcp-stock__dot {
-  background: var(--vcp-accent);
-}
-
-.vcp-stock[data-state='out'] .vcp-stock__dot {
-  background: #a3a3aa;
-}
-
-.vcp-variant {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.vcp-variant label {
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.vcp-variant select {
-  width: 100%;
-  min-height: 48px;
-  padding: 0 40px 0 14px;
-  border: 1.5px solid var(--vcp-ink);
-  border-radius: var(--vcp-radius);
-  background: #ffffff
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23111111' stroke-width='2'/%3E%3C/svg%3E")
-    no-repeat right 14px center;
-  font-size: 15px;
-  appearance: none;
-}
-
-.vcp-bnpl {
-  display: flex;
-  flex-direction: column;
-  border: 1px solid var(--vcp-line);
-  border-radius: var(--vcp-radius);
-}
-
-.vcp-bnpl__row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
-  font-size: 14px;
-}
-
-/* Divider only between rows that are showing (Afterpay hides outside its limits) */
-.vcp-bnpl__row:not([hidden]) ~ .vcp-bnpl__row:not([hidden]) {
-  border-top: 1px solid var(--vcp-line);
-}
-
-.vcp-bnpl:not(:has(.vcp-bnpl__row:not([hidden]))) {
-  display: none;
-}
-
-.vcp-humm-widget {
-  flex: 1;
-  min-width: 0;
-  font-size: 14px;
-}
-
-.vcp-pill {
-  flex: none;
-  padding: 4px 9px;
-  border-radius: 10px;
-  font-size: 12px;
-  font-weight: 800;
-  line-height: 1.2;
-  text-decoration: none;
-}
-
-.vcp .vcp-pill--afterpay,
-.vcp .vcp-pill--afterpay:hover {
-  background: #b2fce4;
-  color: #111111;
-}
-
-.vcp .vcp-pill--humm,
-.vcp .vcp-pill--humm:hover {
-  background: #ff6c00;
-  color: #ffffff;
-}
-
-.vcp-app-block:empty,
-.vcp-custom-liquid:empty {
-  display: none;
-}
-
-.vcp-form {
-  display: block;
-  --shopify-accelerated-checkout-button-block-size: 52px;
-  --shopify-accelerated-checkout-button-border-radius: 2px;
-}
-
-.vcp-form__error {
-  margin-bottom: 10px;
-  padding: 10px 12px;
-  border-radius: var(--vcp-radius);
-  background: #fdecea;
-  color: #8c1d18;
-  font-size: 14px;
-}
-
-.vcp-buy {
-  display: flex;
-  gap: 10px;
-}
-
-.vcp-qty {
-  flex: none;
-  display: flex;
-  align-items: center;
-  border: 1.5px solid var(--vcp-ink);
-  border-radius: var(--vcp-radius);
-}
-
-.vcp-qty__btn {
-  width: 44px;
-  height: 49px;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: var(--vcp-ink);
-  font-size: 20px;
-  cursor: pointer;
-}
-
-.vcp-qty__input {
-  width: 34px;
-  height: 49px;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: var(--vcp-ink);
-  font-size: 16px;
-  font-weight: 600;
-  text-align: center;
-  -moz-appearance: textfield;
-}
-
-.vcp-qty__input::-webkit-outer-spin-button,
-.vcp-qty__input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-.vcp-atc {
-  flex: 1;
-  min-width: 0;
-  min-height: 52px;
-  padding: 0 14px;
-  border: 0;
-  border-radius: var(--vcp-radius);
-  background: var(--vcp-accent);
-  color: #ffffff;
-  font-size: 16px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  cursor: pointer;
-  transition: background 0.15s ease;
-}
-
-.vcp-atc:hover {
-  background: var(--vcp-accent-hover);
-}
-
-.vcp-atc:disabled {
-  background: #a3a3aa;
-  cursor: not-allowed;
-}
-
-.vcp-atc.loading {
-  opacity: 0.7;
-  cursor: progress;
-}
-
-.vcp-dynamic-checkout {
-  margin-top: 10px;
-}
-
-.vcp .shopify-payment-button__button {
-  min-height: 52px;
-  border-radius: var(--vcp-radius);
-  font-family: inherit;
-}
-
-.vcp .shopify-payment-button__more-options {
-  display: block;
-  width: 100%;
-  margin-top: 10px;
-  padding: 4px 0;
-  border: 0;
-  background: none;
-  color: var(--vcp-ink);
-  font-family: inherit;
-  font-size: 14px;
-  text-align: center;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  cursor: pointer;
-}
-
-.vcp .shopify-payment-button__more-options:hover {
-  color: var(--vcp-accent-ink);
-}
-
-.vcp-guarantees {
-  display: flex;
-  flex-direction: column;
-  border-top: 1px solid var(--vcp-line);
-}
-
-.vcp-guarantee {
-  border-bottom: 1px solid var(--vcp-line);
-}
-
-.vcp-guarantee > summary {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-height: 60px;
-  padding: 8px 0;
-  font-size: 14px;
-}
-
-.vcp-guarantee__icon {
-  flex: none;
-  display: flex;
-  color: var(--vcp-accent);
-}
-
-.vcp-guarantee__text {
-  flex: 1;
-  line-height: 1.4;
-}
-
-.vcp-guarantee__text strong {
-  display: block;
-  font-weight: 700;
-}
-
-.vcp-guarantee__sub {
-  color: var(--vcp-muted);
-}
-
-.vcp-guarantee__body {
-  padding: 0 0 16px 34px;
-  font-size: 14px;
-}
-
-.vcp-au {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.vcp-au__badge {
-  flex: none;
-  width: 80px;
-  height: 80px;
-  object-fit: contain;
-}
-
-.vcp-au__title {
-  font-size: 16px;
-  font-weight: 800;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-}
-
-.vcp-au__text {
-  margin-top: 4px;
-  font-size: 14px;
-  line-height: 1.5;
-  color: var(--vcp-ink-2);
-}
-
-/* ---------- Description ---------- */
-
-.vcp-desc {
-  border-top: 1px solid var(--vcp-line);
-}
-
-.vcp-desc__inner {
-  display: grid;
-  gap: 20px;
-  padding-top: 64px;
-  padding-bottom: 64px;
-}
-
-.vcp-desc__body {
-  max-width: 820px;
-  font-size: 16px;
-  /* Matches the black the Shopify editor adds inline to most description text */
-  color: var(--vcp-ink);
-}
-
-@media (min-width: 990px) {
-  .vcp-desc--split .vcp-desc__inner {
-    grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
-    gap: 48px;
-    align-items: start;
-  }
-}
-
-/* ---------- Why us ---------- */
-
-.vcp-why {
-  border-top: 1px solid var(--vcp-line);
-}
-
-.vcp-why__inner {
-  display: grid;
-  gap: 32px 48px;
-  padding-top: 72px;
-  padding-bottom: 72px;
-}
-
-.vcp-why__lede {
-  margin-top: 12px;
-  font-size: 16px;
-  line-height: 1.6;
-  color: var(--vcp-ink-2);
-}
-
-.vcp-why__grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 16px;
-}
-
-.vcp-why__item {
-  position: relative;
-  padding: 20px 16px 22px;
-  border-radius: var(--vcp-radius);
-  transition:
-    opacity 0.5s ease,
-    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
-    background-color 0.3s ease;
-}
-
-/* Orange line along the top; it draws across when the card scrolls in */
-.vcp-why__item::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: var(--vcp-accent);
-  transform-origin: left center;
-  transition:
-    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1),
-    height 0.25s ease;
-}
-
-.vcp-why__num {
-  display: block;
-  margin-bottom: 10px;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  font-variant-numeric: tabular-nums;
-  color: #a3a3aa;
-  transition: color 0.25s ease;
-}
-
-.vcp-why__item h3 {
-  margin-bottom: 6px;
-  font-size: 18px;
-  font-weight: 700;
-  line-height: 1.3;
-}
-
-.vcp-why__item .vcp-rte {
-  font-size: 16px;
-}
-
-/* Scroll reveal — only once the script is running, so cards never stay hidden */
-.vcp-why--ready .vcp-why__item:not(.is-visible) {
-  opacity: 0;
-  transform: translateY(18px);
-}
-
-.vcp-why--ready .vcp-why__item:not(.is-visible)::before {
-  transform: scaleX(0);
-}
-
-/* Highlighted card: hover on desktop, the card mid-screen on touch screens */
-.vcp-why__item.is-active {
-  background: var(--vcp-sand);
-  transform: translateY(-4px);
-}
-
-.vcp-why__item.is-active::before {
-  height: 4px;
-}
-
-.vcp-why__item.is-active .vcp-why__num {
-  color: var(--vcp-accent);
-}
-
-@media (hover: hover) {
-  .vcp-why__item:hover {
-    background: var(--vcp-sand);
-    transform: translateY(-4px);
-  }
-
-  .vcp-why__item:hover::before {
-    height: 4px;
-  }
-
-  .vcp-why__item:hover .vcp-why__num {
-    color: var(--vcp-accent);
-  }
-
-  .vcp-why__grid:hover .vcp-why__item.is-visible:not(:hover) {
-    opacity: 0.55;
-  }
-}
-
-@media (min-width: 990px) {
-  .vcp-why__inner {
-    grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
-    align-items: start;
-  }
-}
-
-/* ---------- Dimensions & specs ---------- */
-
-.vcp-dims__inner {
-  padding-top: 80px;
-  padding-bottom: 80px;
-}
-
-.vcp-dims .vcp-h2 {
-  margin-bottom: 28px;
-}
-
-.vcp-dims__grid {
-  display: grid;
-  gap: 40px;
-  align-items: stretch;
-}
-
-@media (min-width: 990px) {
-  .vcp-dims__grid--media {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  }
-}
-
-.vcp-dims__media {
-  aspect-ratio: 1 / 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  border-radius: var(--vcp-radius);
-  background: var(--vcp-dims-bg, #17171b);
-}
-
-.vcp-dims__media img,
-.vcp-dims__media .vcp-placeholder {
-  width: 100%;
-  height: 100%;
-  object-fit: var(--vcp-dims-fit, contain);
-}
-
-.vcp-dims__media .vcp-placeholder {
-  fill: #5c5c62;
-}
-
-.vcp-specs {
-  display: flex;
-  flex-direction: column;
-  border-top: 1px solid var(--vcp-line-2);
-}
-
-.vcp-specs__row {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  padding: 16px 0;
-  border-bottom: 1px solid var(--vcp-line-2);
-  font-size: 18px;
-  line-height: 1.3;
-}
-
-.vcp-specs__row dt {
-  font-weight: 700;
-  color: var(--vcp-accent-ink);
-}
-
-.vcp-specs__row dd {
-  text-align: right;
-}
-
-@media (min-width: 990px) {
-  .vcp-specs__row {
-    padding: 18px 0;
-    font-size: 21px;
-  }
-}
-
-/* ---------- Trustpilot reviews band ---------- */
-
-.vcp.vcp-reviews {
-  background: var(--vcp-dark);
-  color: #ffffff;
-}
-
-.vcp-reviews__inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 24px;
-  padding-top: 56px;
-  padding-bottom: 56px;
-}
-
-.vcp-eyebrow {
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: var(--vcp-accent);
-  text-transform: uppercase;
-}
-
-.vcp-reviews .vcp-h2 {
-  margin-top: 6px;
-  color: #ffffff;
-}
-
-.vcp .vcp-btn-outline {
-  display: inline-flex;
-  align-items: center;
-  min-height: 48px;
-  padding: 0 22px;
-  border: 1.5px solid #ffffff;
-  border-radius: var(--vcp-radius);
-  color: #ffffff;
-  font-weight: 600;
-  text-decoration: none;
-}
-
-.vcp .vcp-btn-outline:hover {
-  background: #ffffff;
-  color: var(--vcp-dark);
-}
-
-.vcp-reviews__widget {
-  padding-bottom: 56px;
-}
-
-/* ---------- Small screens ---------- */
-
-@media (max-width: 749px) {
-  .vcp {
-    --vcp-gutter: 16px;
-  }
-
-  .vcp-title {
-    font-size: 30px;
-  }
-
-  .vcp-blurb {
-    font-size: 16px;
-  }
-
-  .vcp-h2 {
-    font-size: 28px;
-  }
-
-  .vcp-buybox {
-    padding: 20px 16px;
-  }
-
-  .vcp-qty__btn {
-    width: 38px;
-  }
-
-  .vcp-qty__input {
-    width: 30px;
-  }
-
-  .vcp-atc {
-    padding: 0 10px;
-    font-size: 15px;
-    letter-spacing: 0;
-  }
-
-  .vcp-price__now {
-    font-size: 30px;
-  }
-
-  .vcp-thumbs {
-    gap: 8px;
-  }
-
-  .vcp-badge,
-  .vcp-consult {
-    left: 12px;
-  }
-
-  .vcp-badge {
-    top: 12px;
-  }
-
-  .vcp-consult {
-    bottom: 12px;
-  }
-
-  .vcp-why__inner,
-  .vcp-desc__inner {
-    padding-top: 48px;
-    padding-bottom: 48px;
-  }
-
-  .vcp-dims__inner {
-    padding-top: 56px;
-    padding-bottom: 56px;
-  }
-
-  .vcp-reviews__inner {
-    padding-top: 40px;
-    padding-bottom: 40px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .vcp-plus,
-  .vcp-atc,
-  .vcp-why__item,
-  .vcp-why__item::before {
-    transition: none;
-  }
-
-  .vcp-why__item.is-active,
-  .vcp-why__item:hover {
-    transform: none;
-  }
-}
-
-</style>
-
-<div class="vcp vcp-reviews" id="reviews">
-  <div class="vcp-wrap vcp-reviews__inner">
-    <div><p class="vcp-eyebrow">Trustpilot</p><h2 class="vcp-h2">750+ Australians rate us on Trustpilot</h2>
-    </div><a class="vcp-btn-outline" href="https://au.trustpilot.com/review/vulcanfitness.com.au" target="_blank" rel="noopener">Read our Trustpilot reviews</a></div></div>
 
 
 </section>

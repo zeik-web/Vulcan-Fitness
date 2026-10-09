@@ -180,6 +180,12 @@ async function renderSection(key, data) {
     return { id, type: block.type, settings: settingsFor(def.settings, block.settings), shopify_attributes: '' };
   });
   const section = { id: `template--preview__${key}`, settings: settingsFor(schema.settings, data.settings), blocks };
+  // No dimension drawings are picked yet; borrow two product photos so the
+  // front/side arrows show in the preview.
+  if (data.type === 'vulcan-dimensions-specs' && !section.settings.image && !section.settings.image_side) {
+    section.settings.image = { src: media[3].src };
+    section.settings.image_side = { src: media[4].src };
+  }
   const html = await engine.parseAndRender(source, {
     section,
     product: liquidProduct,
@@ -249,7 +255,7 @@ const page = `<!doctype html>
 </style>
 </head>
 <body>
-<div class="preview-bar"><strong>Preview</strong> — rendered from the theme files with the live Leg Extension &amp; Leg Curl data. Buttons don't add to cart here.</div>
+<div class="preview-bar"><strong>Preview</strong> — rendered from the theme files with the live Leg Extension &amp; Leg Curl data. Buttons don't add to cart here; the dimension photos are stand-ins.</div>
 <div class="preview-theme-part">District theme announcement bar &amp; header</div>
 ${body}
 <div class="preview-theme-part">District theme footer</div>

@@ -11,31 +11,43 @@ live Leg Extension & Leg Curl data.
 
 | Section (theme editor name) | What it does |
 | --- | --- |
-| **Commercial product** | Breadcrumb, Trustpilot strip, title + blurb, photo gallery with stock badge and "Talk to a gym consultant", the 🚚 Shipping / 🛠️ Installation / 🛡️ Warranty dropdowns, and the buy box |
+| **Commercial product** | Breadcrumb, live Trustpilot widget, title + blurb, photo gallery with stock badge and "Talk to a gym consultant", the Shipping / Installation / Warranty dropdowns (with black line icons), and the buy box |
 | **Commercial description** | Each product's own description from Shopify admin (Products › Description), shown full width with no heading — edit the product and the page updates |
-| **Commercial why us** | "Why us?" heading, intro line and up to 6 numbered feature cards. They fade up in turn as you scroll to them; hovering one lifts and highlights it (on phones, the card in the middle of the screen highlights) |
-| **Commercial specs** | Dimensions photo and specification rows |
-| **Commercial reviews** | Dark Trustpilot band — the "Read reviews →" link scrolls here |
-| Product recommendations | District's existing "You may also like" section |
+| **Commercial why us** | "Why us?" heading, intro line and up to 6 feature cards. They fade up in turn as you scroll to them; hovering one lifts and highlights it (on phones, the card in the middle of the screen highlights). Numbering (01, 02…) is a tickbox, off by default |
+| **Commercial specs** | Front view and side view dimension photos with arrows (and swipe on phones) to switch between them, plus the specification rows |
+| Product recommendations | District's existing "You may also like" section. Your Trustpilot app adds its review widget below it, as on the rest of the site |
+
+`sections/vulcan-trustpilot-reviews.liquid` (a dark Trustpilot band) is still in the theme but no
+longer on the template, since the Trustpilot app already shows reviews there.
+
+### Trustpilot
+
+The strip above the title is Trustpilot's own widget for business ID `6022a7fcf1069f000155785b`
+(the same account your Trustpilot app uses), so the stars, TrustScore and review count stay live.
+Choose *Mini* (stars, TrustScore and review count, like the one in the footer), or one of the
+one-line *Micro* widgets, under **Trustpilot widget**. The TrustScore and review count settings
+are only used for the plain strip, and while the widget loads.
 
 ### Buy box
 
 - **Price** from the selected variant, with the compare-at price struck through when it's higher.
-- **Stock**: product titles here end with a status (`| IN STOCK`, `| MADE-TO-ORDER 60~75 DAYS`, `| PRE-ORDER …`).
-  That part is taken out of the heading and shown in the photo badge (green for in stock, orange
-  otherwise) and the stock line. A sold-out variant shows "Sold out" and disables the button.
-- **Afterpay**: "4 interest-free payments of $X" (price ÷ 4). Set to your $4,000 Afterpay limit —
-  products priced above it simply don't show the Afterpay row.
+- **Stock badge** on the main photo. *Automatic* reads the status at the end of the product title
+  (`| IN STOCK`, `| MADE-TO-ORDER 60~75 DAYS`, `| PRE-ORDER …`): green for in stock, orange for
+  anything else. Or force it to *In stock* (green) or *Pre-order* (orange, text and colour
+  editable). Sold-out variants show a grey "Sold out" badge and disable the button.
+- **Afterpay**: shown by the Afterpay app snippet already in your theme (`theme.liquid`), not by
+  this section.
+- **Zip**: "Own it now, pay later" with the Zip badge — shown at every price, as Zip has no limit.
 - **humm**: humm's own price widget, using the same script and merchant ID (30139735) as your
   current product pages, so the terms it shows stay current. You can switch to your own text.
 - **Shop Pay**: Shopify's dynamic checkout button (`payment_button`) — Shop Pay plus the
   "More payment options" link. The card/wallet chips from the design are removed.
 - **Add to cart** uses District's `<product-form>`, so it opens the theme's cart popup like the
-  rest of the site. The button shows the total for the chosen quantity.
+  rest of the site.
 - **Guarantees**: 90 Day Love It or Leave It and Commercial warranty, each a dropdown.
 - **100% Australian owned** with the Australian Owned Certified #08375 badge.
 - **Custom code** and **app** blocks can be added to the buy box (they appear under the payment
-  rows) — useful for Afterpay/humm/Trustpilot app widgets.
+  rows) — useful for payment or app widgets.
 
 ## Files
 
@@ -86,8 +98,8 @@ Fill in or check these — they're placeholders or depend on your accounts:
 - **Warranty years**: the Warranty dropdown, the Commercial warranty guarantee, and its
   subheading still have `[X years]` placeholders.
 - **Colour** and **Upholstery** spec rows (`[Frame colour]`, `[Colour / material]`).
-- **Dimensions photo**: pick it in *Commercial specs*. Until then the specs show full width.
-- **Trustpilot count**: "750+" is from the design; check it matches your profile.
+- **Dimension photos**: pick the front view and side view drawings in *Commercial specs*. Until
+  then the specs show full width (the preview borrows two product photos as stand-ins).
 
 ## Rebuilding the preview
 

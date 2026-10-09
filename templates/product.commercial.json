@@ -6,7 +6,7 @@
         "tab_shipping": {
           "type": "tab",
           "settings": {
-            "emoji": "🚚",
+            "icon": "truck",
             "title": "Shipping",
             "content": "<p>Fast Australia-wide shipping at discounted rates — you'll see your price at checkout once you enter your address. Large items arrive on a pallet and are delivered to where the driver has safe access; for safety reasons drivers can't carry items inside or upstairs.</p><p><strong>Brisbane collection:</strong> collect from Unit 2A/919-925 Nudgee Road, Banyo QLD 4014, Monday to Friday 8.30am–5pm.</p><p>Regional? We can often send to your nearest depot for less. Call +61 404 969 244 or email support@vulcanfitness.com.au. <a href=\"/pages/shipping\" title=\"Shipping & Delivery\">Shipping & delivery details</a></p>"
           }
@@ -14,7 +14,7 @@
         "tab_installation": {
           "type": "tab",
           "settings": {
-            "emoji": "🛠️",
+            "icon": "tools",
             "title": "Installation",
             "content": "<p>We have installers in every major city across Australia. Installing a pin-loaded leg extension / leg curl machine is typically <strong>$350–$500</strong>, depending on your area.</p><p>Install estimates don't include shipping. Email support@vulcanfitness.com.au with the items you'd like installed and we'll quote installation and delivery together — or ask us about a full-gym fit-out. <a href=\"/pages/installation\" title=\"Installation\">See installation rates</a></p>"
           }
@@ -22,7 +22,7 @@
         "tab_warranty": {
           "type": "tab",
           "settings": {
-            "emoji": "🛡️",
+            "icon": "shield",
             "title": "Warranty",
             "content": "<p>[Frame: X years · Cables: X years · Upholstery: X years]</p><p>If your machine develops a defect within the warranty period, we'll repair, replace or refund it. Warranties apply to the original purchaser and can't be transferred. <a href=\"/pages/returns\" title=\"Warranty & Returns\">Warranty & returns policy</a></p>"
           }
@@ -61,27 +61,27 @@
         "breadcrumb_url": "shopify://pages/commercial-fitout-series",
         "font": "archivo_n4",
         "show_trustpilot": true,
-        "trustpilot_rating": "5",
-        "trustpilot_reviews": "750+ reviews",
-        "trustpilot_cta": "Read reviews →",
-        "trustpilot_link": "#reviews",
-        "trustpilot_widget": "",
+        "trustpilot_style": "mini",
+        "trustpilot_business_id": "6022a7fcf1069f000155785b",
+        "trustpilot_score": "4.9",
+        "trustpilot_reviews": "763 reviews",
+        "trustpilot_link": "https://au.trustpilot.com/review/vulcanfitness.com.au",
         "gallery_ratio": "4 / 3",
         "gallery_bg": "#ffffff",
         "show_badge": true,
+        "badge_mode": "auto",
         "badge_in_text": "IN STOCK",
+        "badge_preorder_text": "PRE-ORDER",
         "badge_out_text": "SOLD OUT",
         "badge_in_color": "#0ADD17",
+        "badge_preorder_color": "#DD760A",
         "show_consultant": true,
         "consult_label": "Talk to a gym consultant",
         "consult_email": "support@vulcanfitness.com.au",
         "consult_phone": "+61 404 969 244",
         "price_note": "Tax included. Shipping calculated at checkout.",
-        "stock_in_text": "In stock — dispatches from Brisbane",
-        "stock_out_text": "Sold out — contact us for the next shipment",
-        "show_afterpay": true,
-        "afterpay_min": 1,
-        "afterpay_max": 4000,
+        "show_zip": true,
+        "zip_text": "Own it now, pay later",
         "show_humm": true,
         "humm_mode": "widget",
         "humm_merchant_id": "30139735",
@@ -128,11 +128,15 @@
           }
         }
       },
-      "block_order": ["feature_rom", "feature_easy", "feature_stack"],
+      "block_order": [
+        "feature_rom",
+        "feature_easy",
+        "feature_stack"
+      ],
       "settings": {
         "heading": "Why us?",
         "intro": "Commercial fit-outs priced openly, shipped and installed from Brisbane.",
-        "show_numbers": true
+        "show_numbers": false
       }
     },
     "dimensions": {
@@ -140,39 +144,66 @@
       "blocks": {
         "spec_stack": {
           "type": "spec",
-          "settings": { "label": "Weight stack", "value": "120 kg (5 kg increments)" }
+          "settings": {
+            "label": "Weight stack",
+            "value": "120 kg (5 kg increments)"
+          }
         },
         "spec_ratio": {
           "type": "spec",
-          "settings": { "label": "Weight stack ratio", "value": "1:1" }
+          "settings": {
+            "label": "Weight stack ratio",
+            "value": "1:1"
+          }
         },
         "spec_steel": {
           "type": "spec",
-          "settings": { "label": "Steel thickness", "value": "3 mm" }
+          "settings": {
+            "label": "Steel thickness",
+            "value": "3 mm"
+          }
         },
         "spec_colour": {
           "type": "spec",
-          "settings": { "label": "Colour", "value": "[Frame colour]" }
+          "settings": {
+            "label": "Colour",
+            "value": "[Frame colour]"
+          }
         },
         "spec_upholstery": {
           "type": "spec",
-          "settings": { "label": "Upholstery", "value": "[Colour / material]" }
+          "settings": {
+            "label": "Upholstery",
+            "value": "[Colour / material]"
+          }
         },
         "spec_adjust": {
           "type": "spec",
-          "settings": { "label": "Adjustable settings", "value": "Foot, leg & seat pads" }
+          "settings": {
+            "label": "Adjustable settings",
+            "value": "Foot, leg & seat pads"
+          }
         },
         "spec_footprint": {
           "type": "spec",
-          "settings": { "label": "Footprint", "value": "130 × 99 cm" }
+          "settings": {
+            "label": "Footprint",
+            "value": "130 × 99 cm"
+          }
         },
         "spec_weight": {
           "type": "spec",
-          "settings": { "label": "Machine weight", "value": "228 kg" }
+          "settings": {
+            "label": "Machine weight",
+            "value": "228 kg"
+          }
         },
         "spec_crate": {
           "type": "spec",
-          "settings": { "label": "Crate", "value": "167 × 115 × 55 cm (303 kg)" }
+          "settings": {
+            "label": "Crate",
+            "value": "167 × 115 × 55 cm (303 kg)"
+          }
         }
       },
       "block_order": [
@@ -188,18 +219,10 @@
       ],
       "settings": {
         "heading": "Dimensions & specifications",
+        "image_label": "Front view",
+        "image_side_label": "Side view",
         "image_fit": "contain",
         "image_bg": "#17171b"
-      }
-    },
-    "reviews": {
-      "type": "vulcan-trustpilot-reviews",
-      "settings": {
-        "eyebrow": "Trustpilot",
-        "heading": "750+ Australians rate us on Trustpilot",
-        "button_label": "Read our Trustpilot reviews",
-        "button_url": "https://au.trustpilot.com/review/vulcanfitness.com.au",
-        "widget": ""
       }
     },
     "product-recommendations": {
@@ -220,5 +243,11 @@
       }
     }
   },
-  "order": ["main", "description", "why_us", "dimensions", "reviews", "product-recommendations"]
+  "order": [
+    "main",
+    "description",
+    "why_us",
+    "dimensions",
+    "product-recommendations"
+  ]
 }
