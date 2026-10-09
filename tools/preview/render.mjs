@@ -1,4 +1,4 @@
-// Renders templates/product.commercial.json with sample product data into a
+// Renders templates/product.commercial-legextcurl.json with sample product data into a
 // single static HTML file (preview/commercial-product-preview.html).
 //
 // It runs the real section Liquid through LiquidJS with small stand-ins for
@@ -21,7 +21,7 @@ const read = (path) => readFileSync(join(themeRoot, path), 'utf8');
 const [samplePath = join(here, 'sample-product.json'), outPath = join(themeRoot, 'preview/commercial-product-preview.html')] =
   process.argv.slice(2);
 const product = JSON.parse(readFileSync(samplePath, 'utf8'));
-const template = JSON.parse(read('templates/product.commercial.json'));
+const template = JSON.parse(read('templates/product.commercial-legextcurl.json'));
 const MONEY_FORMAT = '${{amount}}';
 const SHOP_FILES = 'https://cdn.shopify.com/s/files/1/0268/0307/7143/files/';
 

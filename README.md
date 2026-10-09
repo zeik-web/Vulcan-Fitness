@@ -73,7 +73,7 @@ snippets/vulcan-commercial-icon.liquid       line icons
 assets/vulcan-commercial.css
 assets/vulcan-commercial.js                  gallery, dropdowns, quantity, variants
 assets/vulcan-australian-owned.webp
-templates/product.commercial.json            the template, pre-filled for the Leg Extension & Leg Curl
+templates/product.commercial-legextcurl.json the Leg Extension & Leg Curl template
 preview/commercial-product-preview.html      static preview (not used by Shopify)
 tools/preview/                               script that builds the preview
 ```
@@ -87,9 +87,9 @@ choose **… › Edit code**.
    `vulcan-commercial.css` and `vulcan-commercial.js` with the contents of the files here.
 2. **Snippets** › *Add a new snippet*: `vulcan-commercial-assets` and `vulcan-commercial-icon`.
 3. **Sections** › *Add a new section*: the five `vulcan-*` sections.
-4. **Templates** › *Add a new template* › product › JSON, name it `commercial`, and replace its
-   contents with `templates/product.commercial.json`.
-5. **Products** › the product › *Theme template* › `commercial`.
+4. **Templates** › *Add a new template* › product › JSON, name it `commercial-legextcurl`, and
+   replace its contents with `templates/product.commercial-legextcurl.json`.
+5. **Products** › the product › *Theme template* › `commercial-legextcurl`.
 6. Preview the duplicate theme, then publish it (or repeat the steps on the live theme).
 
 With Shopify CLI instead: `shopify theme push --unpublished` from a full copy of the theme that
@@ -97,8 +97,9 @@ includes these files.
 
 ### More commercial products
 
-Each product needs its own specs and "Why us" copy. In the theme editor, open the `commercial`
-template and use **Create template › Based on commercial**, then change the text for that
+Each product needs its own specs and "Why us" copy. In the theme editor, open the
+`commercial-legextcurl` template and use **Create template › Based on commercial-legextcurl**
+(naming it after the product, e.g. `commercial-latpulldown`), then change the text for that
 product. Or connect the spec values and blurb to product metafields (the database icon next to a
 setting) so one template fills itself per product.
 
