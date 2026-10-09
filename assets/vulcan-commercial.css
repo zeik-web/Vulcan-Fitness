@@ -349,6 +349,12 @@ details[open] > summary .vcp-plus,
 }
 
 /* Gallery */
+.vcp-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
 .vcp-stage {
   position: relative;
   aspect-ratio: var(--vcp-stage-ratio, 4 / 3);
@@ -476,23 +482,59 @@ details[open] > summary .vcp-plus,
   word-break: break-word;
 }
 
+/* Thumbnail carousel: one row, arrows either side, same shape as the main photo */
 .vcp-thumbs {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 10px;
+  --vcp-thumb-gap: 12px;
+  --vcp-thumbs-visible: 5;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.vcp-thumbs__arrow {
+  flex: none;
+  width: 36px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #444448;
+  cursor: pointer;
+}
+
+.vcp-thumbs__arrow:hover {
+  color: var(--vcp-ink);
+}
+
+.vcp-thumbs__track {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  gap: var(--vcp-thumb-gap);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+
+.vcp-thumbs__track::-webkit-scrollbar {
+  display: none;
 }
 
 .vcp-thumb {
   position: relative;
-  aspect-ratio: 1 / 1;
-  min-height: 44px;
+  flex: 0 0 calc((100% - (var(--vcp-thumbs-visible) - 1) * var(--vcp-thumb-gap)) / var(--vcp-thumbs-visible));
+  aspect-ratio: var(--vcp-stage-ratio, 4 / 3);
   padding: 0;
   border: 2px solid transparent;
-  border-radius: var(--vcp-radius);
   background: var(--vcp-stage-bg, #ffffff);
-  box-shadow: inset 0 0 0 1px var(--vcp-line);
   cursor: pointer;
   overflow: hidden;
+  scroll-snap-align: start;
 }
 
 .vcp-thumb img {
@@ -502,8 +544,7 @@ details[open] > summary .vcp-plus,
 }
 
 .vcp-thumb[aria-current='true'] {
-  border-color: var(--vcp-accent);
-  box-shadow: none;
+  border-color: var(--vcp-ink);
 }
 
 .vcp-thumb__play {
@@ -1337,7 +1378,13 @@ details[open] > summary .vcp-plus,
   }
 
   .vcp-thumbs {
-    gap: 8px;
+    --vcp-thumb-gap: 8px;
+    --vcp-thumbs-visible: 4;
+    gap: 2px;
+  }
+
+  .vcp-thumbs__arrow {
+    width: 28px;
   }
 
   .vcp-badge,

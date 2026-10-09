@@ -11,7 +11,7 @@ live Leg Extension & Leg Curl data.
 
 | Section (theme editor name) | What it does |
 | --- | --- |
-| **Commercial product** | Breadcrumb, live Trustpilot widget, title + blurb, photo gallery with stock badge and "Talk to a gym consultant", the Shipping / Installation / Warranty dropdowns (with black line icons), and the buy box |
+| **Commercial product** | Breadcrumb, live Trustpilot widget, title + blurb, 4:3 photo gallery with stock badge, "Talk to a gym consultant" and a thumbnail carousel with arrows (swipe on phones), the Shipping / Installation / Warranty dropdowns (with black line icons), and the buy box |
 | **Commercial description** | Each product's own description from Shopify admin (Products › Description), shown full width with no heading — edit the product and the page updates |
 | **Commercial why us** | "Why us?" heading, intro line and up to 6 feature cards. They fade up in turn as you scroll to them; hovering one lifts and highlights it (on phones, the card in the middle of the screen highlights). Numbering (01, 02…) is a tickbox, off by default |
 | **Commercial specs** | Front view and side view dimension photos with arrows (and swipe on phones) to switch between them, plus the specification rows |

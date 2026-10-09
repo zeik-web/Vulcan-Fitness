@@ -240,21 +240,30 @@
         </div>
 
         {%- if product.media.size > 1 -%}
+          {%- comment -%} Thumbnail carousel: arrows step through the photos {%- endcomment -%}
           <div class="vcp-thumbs">
-            {%- for media in product.media -%}
-              <button
-                type="button"
-                class="vcp-thumb"
-                data-vcp-thumb="{{ media.id }}"
-                aria-label="Show image {{ forloop.index }} of {{ forloop.length }}"
-                aria-current="{% if media.id == featured_media.id %}true{% else %}false{% endif %}"
-              >
-                {{ media.preview_image | image_url: width: 200 | image_tag: loading: 'lazy', widths: '100, 200', sizes: '100px', alt: '' }}
-                {%- if media.media_type == 'video' or media.media_type == 'external_video' -%}
-                  <span class="vcp-thumb__play" aria-hidden="true">&#9654;</span>
-                {%- endif -%}
-              </button>
-            {%- endfor -%}
+            <button type="button" class="vcp-thumbs__arrow" data-vcp-media-step="-1" aria-label="Previous image">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M15 18l-6-6 6-6"></path></svg>
+            </button>
+            <div class="vcp-thumbs__track" data-vcp-thumbs-track>
+              {%- for media in product.media -%}
+                <button
+                  type="button"
+                  class="vcp-thumb"
+                  data-vcp-thumb="{{ media.id }}"
+                  aria-label="Show image {{ forloop.index }} of {{ forloop.length }}"
+                  aria-current="{% if media.id == featured_media.id %}true{% else %}false{% endif %}"
+                >
+                  {{ media.preview_image | image_url: width: 320 | image_tag: loading: 'lazy', widths: '160, 320', sizes: '160px', alt: '' }}
+                  {%- if media.media_type == 'video' or media.media_type == 'external_video' -%}
+                    <span class="vcp-thumb__play" aria-hidden="true">&#9654;</span>
+                  {%- endif -%}
+                </button>
+              {%- endfor -%}
+            </div>
+            <button type="button" class="vcp-thumbs__arrow" data-vcp-media-step="1" aria-label="Next image">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 18l6-6-6-6"></path></svg>
+            </button>
           </div>
         {%- endif -%}
       </div>
@@ -594,7 +603,7 @@
     {
       "type": "select",
       "id": "gallery_ratio",
-      "label": "Main photo shape",
+      "label": "Photo shape (main photo and thumbnails)",
       "options": [
         { "value": "4 / 3", "label": "Landscape (4:3)" },
         { "value": "1 / 1", "label": "Square (1:1)" }

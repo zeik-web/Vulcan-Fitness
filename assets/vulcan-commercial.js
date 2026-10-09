@@ -76,6 +76,30 @@
 
     var mediaItems = root.querySelectorAll('[data-vcp-media]');
     var thumbs = root.querySelectorAll('[data-vcp-thumb]');
+    var thumbTrack = root.querySelector('[data-vcp-thumbs-track]');
+    var mediaIds = Array.prototype.map.call(mediaItems, function (item) {
+      return item.getAttribute('data-vcp-media');
+    });
+
+    // Scroll the thumbnail row just enough to show the active thumbnail.
+    function revealThumb(thumb) {
+      if (!thumbTrack || !thumb) return;
+      var left = thumb.offsetLeft;
+      var right = left + thumb.offsetWidth;
+      if (left < thumbTrack.scrollLeft) {
+        thumbTrack.scrollTo({ left: left });
+      } else if (right > thumbTrack.scrollLeft + thumbTrack.clientWidth) {
+        thumbTrack.scrollTo({ left: right - thumbTrack.clientWidth });
+      }
+    }
+
+    function stepMedia(step) {
+      var current = Array.prototype.findIndex.call(mediaItems, function (item) {
+        return !item.hidden;
+      });
+      var next = (current + step + mediaIds.length) % mediaIds.length;
+      showMedia(mediaIds[next]);
+    }
 
     function showMedia(mediaId) {
       var id = String(mediaId);
@@ -91,7 +115,9 @@
       });
       if (!found) return;
       thumbs.forEach(function (thumb) {
-        thumb.setAttribute('aria-current', String(thumb.getAttribute('data-vcp-thumb') === id));
+        var active = thumb.getAttribute('data-vcp-thumb') === id;
+        thumb.setAttribute('aria-current', String(active));
+        if (active) revealThumb(thumb);
       });
     }
 
@@ -100,6 +126,28 @@
         showMedia(thumb.getAttribute('data-vcp-thumb'));
       });
     });
+
+    root.querySelectorAll('[data-vcp-media-step]').forEach(function (button) {
+      button.addEventListener('click', function () {
+        stepMedia(parseInt(button.getAttribute('data-vcp-media-step'), 10));
+      });
+    });
+
+    // Swipe left/right on the main photo on touch screens
+    var stage = root.querySelector('.vcp-stage');
+    if (stage && mediaIds.length > 1) {
+      var touchStart = null;
+      stage.addEventListener('touchstart', function (event) {
+        touchStart = { x: event.touches[0].clientX, y: event.touches[0].clientY };
+      }, { passive: true });
+      stage.addEventListener('touchend', function (event) {
+        if (!touchStart) return;
+        var dx = event.changedTouches[0].clientX - touchStart.x;
+        var dy = event.changedTouches[0].clientY - touchStart.y;
+        touchStart = null;
+        if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) stepMedia(dx < 0 ? 1 : -1);
+      });
+    }
 
     /* ---------- Shipping / Installation / Warranty ---------- */
 
