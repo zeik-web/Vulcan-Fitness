@@ -1,0 +1,80 @@
+{%- comment -%}
+  Vulcan commercial product — "Why us?" feature columns.
+{%- endcomment -%}
+
+{% render 'vulcan-commercial-assets' %}
+<div class="vcp vcp-why">
+  <div class="vcp-wrap vcp-why__inner">
+    <div class="vcp-why__intro">
+      {%- if section.settings.heading != blank -%}
+        <h2 class="vcp-h2">{{ section.settings.heading | escape }}</h2>
+      {%- endif -%}
+      {%- if section.settings.intro != blank -%}
+        <p class="vcp-why__lede">{{ section.settings.intro | escape }}</p>
+      {%- endif -%}
+    </div>
+    {%- if section.blocks.size > 0 -%}
+      <div class="vcp-why__grid">
+        {%- for block in section.blocks -%}
+          <div class="vcp-why__item" {{ block.shopify_attributes }}>
+            <h3>{{ block.settings.title | escape }}</h3>
+            <div class="vcp-rte">{{ block.settings.text }}</div>
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Commercial why us",
+  "tag": "section",
+  "class": "vcp-section vcp-section--why",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Why us?"
+    },
+    {
+      "type": "textarea",
+      "id": "intro",
+      "label": "Intro line",
+      "default": "Commercial fit-outs priced openly, shipped and installed from Brisbane."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Heading",
+          "default": "Feature"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text",
+          "default": "<p>Describe this feature.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Commercial why us",
+      "blocks": [
+        { "type": "feature", "settings": { "title": "Ranges of motion" } },
+        { "type": "feature", "settings": { "title": "Easy to use" } },
+        { "type": "feature", "settings": { "title": "Weight Stack & Ratio" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

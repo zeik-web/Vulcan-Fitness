@@ -1,0 +1,12 @@
+{
+  "name": "vulcan-commercial-preview",
+  "private": true,
+  "description": "Renders the vulcan-* sections with sample product data into a static HTML preview.",
+  "type": "module",
+  "scripts": {
+    "build": "node render.mjs"
+  },
+  "dependencies": {
+    "liquidjs": "^10.30.0"
+  }
+}

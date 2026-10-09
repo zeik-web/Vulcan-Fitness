@@ -1,0 +1,931 @@
+{%- comment -%}
+  Vulcan commercial product — main section.
+  Trustpilot strip, title + blurb, gallery, Shipping/Installation/Warranty
+  dropdowns, and the buy box (Afterpay, humm, Shop Pay, guarantees,
+  Australian owned). Built for the District theme: the add-to-cart form is
+  wrapped in District's <product-form> so it opens the theme's cart popup.
+{%- endcomment -%}
+
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign featured_media = current_variant.featured_media | default: product.featured_media
+  assign form_id = 'vcp-form-' | append: section.id
+
+  # Titles in this store end with a stock status, e.g. "... | IN STOCK" or
+  # "... | MADE-TO-ORDER 60~75 DAYS". Show the name in the H1 and move the
+  # status into the badge and stock line.
+  assign display_title = product.title
+  assign title_status = ''
+  if section.settings.split_title and product.title contains ' | '
+    assign display_title = product.title | split: ' | ' | first
+    assign title_status = product.title | split: ' | ' | last | strip
+  endif
+
+  assign variant_status = ''
+  if section.settings.split_title and current_variant.title contains ' | '
+    assign variant_status = current_variant.title | split: ' | ' | last | strip
+  endif
+  assign status_text = variant_status | default: title_status
+
+  if current_variant.available
+    if status_text == blank
+      assign stock_state = 'in'
+      assign badge_text = section.settings.badge_in_text
+      assign stock_text = section.settings.stock_in_text
+    else
+      assign status_upcase = status_text | upcase
+      if status_upcase contains 'IN STOCK'
+        assign stock_state = 'in'
+        assign stock_text = section.settings.stock_in_text
+      else
+        assign stock_state = 'other'
+        assign stock_text = status_text
+      endif
+      assign badge_text = status_text
+    endif
+  else
+    assign stock_state = 'out'
+    assign badge_text = section.settings.badge_out_text
+    assign stock_text = section.settings.stock_out_text
+  endif
+
+  assign price = current_variant.price
+  assign compare_at = current_variant.compare_at_price | default: 0
+
+  assign afterpay_min = section.settings.afterpay_min | default: 0 | times: 100
+  assign afterpay_max = section.settings.afterpay_max | default: 0 | times: 100
+  assign afterpay_ok = true
+  if price < afterpay_min
+    assign afterpay_ok = false
+  endif
+  if afterpay_max > 0 and price > afterpay_max
+    assign afterpay_ok = false
+  endif
+  assign afterpay_amount = price | times: 1.0 | divided_by: 4 | round
+
+  assign humm_payments = section.settings.humm_payments | default: 0
+  assign humm_amount_html = ''
+  if humm_payments > 0
+    assign humm_amount = price | times: 1.0 | divided_by: humm_payments | ceil
+    assign humm_amount_html = humm_amount | money | prepend: '<strong data-vcp-humm-amount>' | append: '</strong>'
+  endif
+  assign humm_text = section.settings.humm_text | escape | replace: '[amount]', humm_amount_html
+
+  assign tab_blocks = section.blocks | where: 'type', 'tab'
+  assign guarantee_blocks = section.blocks | where: 'type', 'guarantee'
+-%}
+
+{% render 'vulcan-commercial-assets' %}
+<script src="{{ 'vulcan-commercial.js' | asset_url }}" defer="defer"></script>
+
+{%- liquid
+  assign font = section.settings.font
+  assign font_500 = font | font_modify: 'weight', '500'
+  assign font_600 = font | font_modify: 'weight', '600'
+  assign font_700 = font | font_modify: 'weight', '700'
+  assign font_800 = font | font_modify: 'weight', '800'
+-%}
+{% style %}
+  {{ font | font_face: font_display: 'swap' }}
+  {{ font_500 | font_face: font_display: 'swap' }}
+  {{ font_600 | font_face: font_display: 'swap' }}
+  {{ font_700 | font_face: font_display: 'swap' }}
+  {{ font_800 | font_face: font_display: 'swap' }}
+  .vcp {
+    font-family: {{ font.family }}, {{ font.fallback_families }};
+  }
+{% endstyle %}
+
+<div
+  class="vcp vcp-product"
+  data-vcp-product
+  style="--vcp-stage-ratio: {{ section.settings.gallery_ratio }}; --vcp-stage-bg: {{ section.settings.gallery_bg }}; --vcp-badge-in: {{ section.settings.badge_in_color }};"
+>
+  {%- if section.settings.show_breadcrumb -%}
+    <nav class="vcp-wrap vcp-crumbs" aria-label="Breadcrumb">
+      <a href="{{ routes.root_url }}">Home</a>
+      <span aria-hidden="true">/</span>
+      {%- if section.settings.breadcrumb_label != blank -%}
+        <a href="{{ section.settings.breadcrumb_url | default: routes.all_products_collection_url }}">
+          {{- section.settings.breadcrumb_label | escape -}}
+        </a>
+        <span aria-hidden="true">/</span>
+      {%- elsif collection -%}
+        <a href="{{ collection.url }}">{{ collection.title | escape }}</a>
+        <span aria-hidden="true">/</span>
+      {%- endif -%}
+      <span aria-current="page">{{ display_title | escape }}</span>
+    </nav>
+  {%- endif -%}
+
+  <div class="vcp-wrap vcp-main">
+    <div class="vcp-main__top">
+      {%- if section.settings.show_trustpilot -%}
+        {%- if section.settings.trustpilot_widget != blank -%}
+          <div class="vcp-tp-widget">{{ section.settings.trustpilot_widget }}</div>
+        {%- else -%}
+          {%- assign rating = section.settings.trustpilot_rating | plus: 0 -%}
+          <a class="vcp-tp" href="{{ section.settings.trustpilot_link | default: '#reviews' }}">
+            <span class="vcp-tp__stars" role="img" aria-label="Rated {{ rating }} out of 5 on Trustpilot">
+              {%- for i in (1..5) -%}
+                {%- liquid
+                  assign half_step = i | minus: 0.5
+                  if rating >= i
+                    assign star_class = ''
+                  elsif rating >= half_step
+                    assign star_class = ' vcp-tp__star--half'
+                  else
+                    assign star_class = ' vcp-tp__star--empty'
+                  endif
+                -%}
+                <span class="vcp-tp__star{{ star_class }}">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="#ffffff" aria-hidden="true" focusable="false">
+                    <path d="M12 2.5l2.9 6.3 6.9.7-5.2 4.6 1.5 6.8L12 17.4l-6.1 3.5 1.5-6.8L2.2 9.5l6.9-.7z"></path>
+                  </svg>
+                </span>
+              {%- endfor -%}
+            </span>
+            <span class="vcp-tp__count">
+              <strong>{{ section.settings.trustpilot_reviews | escape }}</strong> on Trustpilot
+            </span>
+            {%- if section.settings.trustpilot_cta != blank -%}
+              <span class="vcp-tp__cta">{{ section.settings.trustpilot_cta | escape }}</span>
+            {%- endif -%}
+          </a>
+        {%- endif -%}
+      {%- endif -%}
+
+      <div class="vcp-heading">
+        <h1 class="vcp-title">{{ display_title | escape }}</h1>
+        {%- if section.settings.blurb != blank -%}
+          <div class="vcp-blurb">{{ section.settings.blurb }}</div>
+        {%- endif -%}
+      </div>
+
+      <div class="vcp-gallery" data-vcp-gallery>
+        <div class="vcp-stage">
+          {%- for media in product.media -%}
+            {%- liquid
+              assign is_active = false
+              if media.id == featured_media.id
+                assign is_active = true
+              endif
+              if is_active
+                assign img_loading = 'eager'
+              else
+                assign img_loading = 'lazy'
+              endif
+              assign media_alt = media.alt | default: display_title
+            -%}
+            <div class="vcp-stage__item" data-vcp-media="{{ media.id }}" {% unless is_active %}hidden{% endunless %}>
+              {%- case media.media_type -%}
+                {%- when 'image' -%}
+                  {{
+                    media
+                    | image_url: width: 1600
+                    | image_tag:
+                      loading: img_loading,
+                      widths: '480, 720, 960, 1200, 1600',
+                      sizes: '(min-width: 1280px) 744px, (min-width: 1000px) calc(100vw - 536px), calc(100vw - 32px)',
+                      alt: media_alt
+                  }}
+                {%- when 'video' -%}
+                  {{ media | video_tag: controls: true, image_size: '1600x' }}
+                {%- when 'external_video' -%}
+                  {{ media | external_video_tag }}
+                {%- else -%}
+                  {{ media.preview_image | image_url: width: 1600 | image_tag: loading: img_loading, alt: media_alt }}
+              {%- endcase -%}
+            </div>
+          {%- else -%}
+            <div class="vcp-stage__item">{{ 'product-1' | placeholder_svg_tag: 'vcp-placeholder' }}</div>
+          {%- endfor -%}
+
+          {%- if section.settings.show_badge -%}
+            <span class="vcp-badge" data-vcp-badge data-state="{{ stock_state }}">{{ badge_text | escape }}</span>
+          {%- endif -%}
+
+          {%- if section.settings.show_consultant -%}
+            <details class="vcp-consult" data-vcp-consult>
+              <summary>
+                {% render 'vulcan-commercial-icon', icon: 'chat', size: 18 %}
+                {{ section.settings.consult_label | escape }}
+                <span class="vcp-plus" aria-hidden="true">+</span>
+              </summary>
+              <div class="vcp-consult__panel">
+                {%- if section.settings.consult_email != blank -%}
+                  <a href="mailto:{{ section.settings.consult_email | strip }}">
+                    {% render 'vulcan-commercial-icon', icon: 'mail', size: 18 %}
+                    <span>
+                      <strong>Email us</strong>
+                      <span class="vcp-consult__sub">{{ section.settings.consult_email | escape }}</span>
+                    </span>
+                  </a>
+                {%- endif -%}
+                {%- if section.settings.consult_phone != blank -%}
+                  <a href="tel:{{ section.settings.consult_phone | remove: ' ' | remove: '(' | remove: ')' | remove: '-' }}">
+                    {% render 'vulcan-commercial-icon', icon: 'phone', size: 18 %}
+                    <span>
+                      <strong>Call us</strong>
+                      <span class="vcp-consult__sub">{{ section.settings.consult_phone | escape }}</span>
+                    </span>
+                  </a>
+                {%- endif -%}
+              </div>
+            </details>
+          {%- endif -%}
+        </div>
+
+        {%- if product.media.size > 1 -%}
+          <div class="vcp-thumbs">
+            {%- for media in product.media -%}
+              <button
+                type="button"
+                class="vcp-thumb"
+                data-vcp-thumb="{{ media.id }}"
+                aria-label="Show image {{ forloop.index }} of {{ forloop.length }}"
+                aria-current="{% if media.id == featured_media.id %}true{% else %}false{% endif %}"
+              >
+                {{ media.preview_image | image_url: width: 200 | image_tag: loading: 'lazy', widths: '100, 200', sizes: '100px', alt: '' }}
+                {%- if media.media_type == 'video' or media.media_type == 'external_video' -%}
+                  <span class="vcp-thumb__play" aria-hidden="true">&#9654;</span>
+                {%- endif -%}
+              </button>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+
+    {%- if tab_blocks.size > 0 -%}
+      <div class="vcp-main__bottom">
+        <div class="vcp-tabs" style="--vcp-tab-count: {{ tab_blocks.size }};">
+          {%- for block in tab_blocks -%}
+            <button
+              type="button"
+              class="vcp-tab"
+              id="vcp-tab-{{ block.id }}"
+              aria-expanded="false"
+              aria-controls="vcp-tab-panel-{{ block.id }}"
+              data-vcp-tab
+              {{ block.shopify_attributes }}
+            >
+              <span class="vcp-tab__label">
+                {%- if block.settings.emoji != blank -%}
+                  <span class="vcp-emoji" aria-hidden="true">{{ block.settings.emoji }}</span>
+                {%- endif -%}
+                {{ block.settings.title | escape }}
+              </span>
+              <span class="vcp-plus" aria-hidden="true">+</span>
+            </button>
+            <div
+              class="vcp-tab-panel vcp-rte"
+              id="vcp-tab-panel-{{ block.id }}"
+              role="region"
+              aria-labelledby="vcp-tab-{{ block.id }}"
+              hidden
+            >
+              {{ block.settings.content }}
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- endif -%}
+
+    <aside class="vcp-buybox" aria-label="Purchase options">
+      <div class="vcp-price">
+        <span class="vcp-price__now" data-vcp-price>{{ price | money }}</span>
+        <s class="vcp-price__was" data-vcp-compare {% unless compare_at > price %}hidden{% endunless %}>
+          {{- compare_at | money -}}
+        </s>
+      </div>
+      {%- if section.settings.price_note != blank -%}
+        <div class="vcp-price-note">{{ section.settings.price_note }}</div>
+      {%- endif -%}
+
+      <div class="vcp-stock" data-vcp-stock data-state="{{ stock_state }}">
+        <span class="vcp-stock__dot" aria-hidden="true"></span>
+        <span data-vcp-stock-text>{{ stock_text | escape }}</span>
+      </div>
+
+      {%- unless product.has_only_default_variant -%}
+        <div class="vcp-variant">
+          <label for="vcp-variant-{{ section.id }}">{{ product.options | join: ' / ' | escape }}</label>
+          <select id="vcp-variant-{{ section.id }}" data-vcp-variant-select>
+            {%- for variant in product.variants -%}
+              <option value="{{ variant.id }}" {% if variant.id == current_variant.id %}selected{% endif %}>
+                {{- variant.title | escape -}}
+                {%- unless variant.available %} — {{ section.settings.sold_out_label | escape }}{% endunless -%}
+              </option>
+            {%- endfor -%}
+          </select>
+        </div>
+      {%- endunless -%}
+
+      {%- if section.settings.show_afterpay or section.settings.show_humm -%}
+        <div class="vcp-bnpl">
+          {%- if section.settings.show_afterpay -%}
+            <div class="vcp-bnpl__row" data-vcp-afterpay>
+              <span class="vcp-bnpl__text" data-vcp-afterpay-in {% unless afterpay_ok %}hidden{% endunless %}>
+                4 interest-free payments of <strong data-vcp-afterpay-amount>{{ afterpay_amount | money }}</strong>
+              </span>
+              <span class="vcp-bnpl__text vcp-bnpl__text--muted" data-vcp-afterpay-out {% if afterpay_ok %}hidden{% endif %}>
+                {%- if afterpay_max > 0 -%}
+                  Available on orders between {{ afterpay_min | money_without_trailing_zeros }} and
+                  {{ afterpay_max | money_without_trailing_zeros }}
+                {%- else -%}
+                  Available on orders over {{ afterpay_min | money_without_trailing_zeros }}
+                {%- endif -%}
+              </span>
+              <a
+                class="vcp-pill vcp-pill--afterpay"
+                href="https://www.afterpay.com/en-AU/how-it-works"
+                target="_blank"
+                rel="noopener"
+                aria-label="Afterpay — how it works (opens in a new tab)"
+              >
+                Afterpay
+              </a>
+            </div>
+          {%- endif -%}
+
+          {%- if section.settings.show_humm -%}
+            <div class="vcp-bnpl__row">
+              {%- if section.settings.humm_mode == 'widget' and section.settings.humm_merchant_id != blank -%}
+                {%- comment -%}
+                  humm's own price widget — the same script your District product pages use.
+                  It writes its message where the script tag sits, so it has to load inline.
+                {%- endcomment -%}
+                <div class="vcp-humm-widget">
+                  {% # theme-check-disable ParserBlockingScript, RemoteAsset %}
+                  <script src="https://bpi.humm-au.com/au/content/scripts/price-info_sync.js?productPrice={{ price | divided_by: 100.0 }}&merchantId={{ section.settings.humm_merchant_id | strip | url_encode }}"></script>
+                  {% # theme-check-enable ParserBlockingScript, RemoteAsset %}
+                </div>
+              {%- else -%}
+                <span class="vcp-bnpl__text" data-vcp-humm-text>{{ humm_text }}</span>
+                <a
+                  class="vcp-pill vcp-pill--humm"
+                  href="https://www.shophumm.com/au/"
+                  target="_blank"
+                  rel="noopener"
+                  aria-label="humm (opens in a new tab)"
+                >
+                  humm
+                </a>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when '@app' -%}
+            <div class="vcp-app-block">{% render block %}</div>
+          {%- when 'liquid' -%}
+            <div class="vcp-custom-liquid" {{ block.shopify_attributes }}>{{ block.settings.custom_liquid }}</div>
+        {%- endcase -%}
+      {%- endfor -%}
+
+      <product-form class="vcp-form">
+        <div class="product-form__error-container vcp-form__error" role="alert" hidden>
+          <span class="product-form__error-message"></span>
+        </div>
+        {%- form 'product', product, id: form_id, class: 'vcp-form__form', novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
+          <input type="hidden" name="id" value="{{ current_variant.id }}" data-vcp-variant-id>
+          <div class="vcp-buy">
+            <div class="vcp-qty">
+              <button type="button" class="vcp-qty__btn" data-vcp-qty-step="-1" aria-label="Decrease quantity">&minus;</button>
+              <label class="vcp-visually-hidden" for="vcp-qty-{{ section.id }}">Quantity</label>
+              <input
+                class="vcp-qty__input"
+                id="vcp-qty-{{ section.id }}"
+                type="number"
+                name="quantity"
+                value="1"
+                min="1"
+                max="99"
+                inputmode="numeric"
+                data-vcp-qty
+              >
+              <button type="button" class="vcp-qty__btn" data-vcp-qty-step="1" aria-label="Increase quantity">+</button>
+            </div>
+            <button
+              type="submit"
+              name="add"
+              class="vcp-atc"
+              data-vcp-atc
+              {% unless current_variant.available %}
+                disabled
+              {% endunless %}
+            >
+              <span data-vcp-atc-label>
+                {%- if current_variant.available -%}
+                  {{ section.settings.atc_label | escape }} — {{ price | money }}
+                {%- else -%}
+                  {{ section.settings.sold_out_label | escape }}
+                {%- endif -%}
+              </span>
+            </button>
+          </div>
+          {%- if section.settings.show_dynamic_checkout -%}
+            <div class="vcp-dynamic-checkout">{{ form | payment_button }}</div>
+          {%- endif -%}
+        {%- endform -%}
+      </product-form>
+
+      {%- if guarantee_blocks.size > 0 -%}
+        <div class="vcp-guarantees">
+          {%- for block in guarantee_blocks -%}
+            <details class="vcp-guarantee" {{ block.shopify_attributes }}>
+              <summary>
+                <span class="vcp-guarantee__icon">{% render 'vulcan-commercial-icon', icon: block.settings.icon %}</span>
+                <span class="vcp-guarantee__text">
+                  <strong>{{ block.settings.title | escape }}</strong>
+                  {%- if block.settings.subtitle != blank -%}
+                    <span class="vcp-guarantee__sub">{{ block.settings.subtitle | escape }}</span>
+                  {%- endif -%}
+                </span>
+                <span class="vcp-plus" aria-hidden="true">+</span>
+              </summary>
+              <div class="vcp-guarantee__body vcp-rte">{{ block.settings.content }}</div>
+            </details>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.show_au_owned -%}
+        <div class="vcp-au">
+          {%- if section.settings.au_badge != blank -%}
+            {{
+              section.settings.au_badge
+              | image_url: width: 240
+              | image_tag: width: 80, height: 80, loading: 'lazy', class: 'vcp-au__badge'
+            }}
+          {%- else -%}
+            <img
+              class="vcp-au__badge"
+              src="{{ 'vulcan-australian-owned.webp' | asset_url }}"
+              alt="Australian Owned Certified badge #08375"
+              width="80"
+              height="80"
+              loading="lazy"
+            >
+          {%- endif -%}
+          <div>
+            <p class="vcp-au__title">{{ section.settings.au_heading | escape }}</p>
+            {%- if section.settings.au_text != blank -%}
+              <div class="vcp-au__text">{{ section.settings.au_text }}</div>
+            {%- endif -%}
+          </div>
+        </div>
+      {%- endif -%}
+    </aside>
+  </div>
+
+  <script type="application/json" data-vcp-config>
+    {
+      "moneyFormat": {{ shop.money_format | json }},
+      "splitTitle": {{ section.settings.split_title | json }},
+      "productStatus": {{ title_status | json }},
+      "badgeIn": {{ section.settings.badge_in_text | json }},
+      "badgeOut": {{ section.settings.badge_out_text | json }},
+      "stockIn": {{ section.settings.stock_in_text | json }},
+      "stockOut": {{ section.settings.stock_out_text | json }},
+      "atcLabel": {{ section.settings.atc_label | json }},
+      "soldOutLabel": {{ section.settings.sold_out_label | json }},
+      "afterpayMin": {{ afterpay_min | json }},
+      "afterpayMax": {{ afterpay_max | json }},
+      "hummPayments": {{ humm_payments | json }},
+      "variants": {{ product.variants | json }}
+    }
+  </script>
+</div>
+
+{% schema %}
+{
+  "name": "Commercial product",
+  "tag": "section",
+  "class": "vcp-section vcp-section--product",
+  "enabled_on": {
+    "templates": ["product"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Title & blurb"
+    },
+    {
+      "type": "checkbox",
+      "id": "split_title",
+      "label": "Move stock status out of the title",
+      "info": "Your product titles end with “| IN STOCK”, “| PRE-ORDER …” etc. When on, that part is hidden from the heading and shown in the photo badge and stock line instead.",
+      "default": true
+    },
+    {
+      "type": "richtext",
+      "id": "blurb",
+      "label": "Blurb under the title",
+      "info": "One or two sentences on why it's good. Connect it to a product metafield to write a different blurb per product.",
+      "default": "<p>Dual-function quad and hamstring station built for floors that never get a day off.</p>"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumb",
+      "label": "Show breadcrumb",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "breadcrumb_label",
+      "label": "Breadcrumb middle link",
+      "default": "Commercial"
+    },
+    {
+      "type": "url",
+      "id": "breadcrumb_url",
+      "label": "Breadcrumb middle link URL"
+    },
+    {
+      "type": "font_picker",
+      "id": "font",
+      "label": "Page font",
+      "info": "Archivo matches the design. Pick your District body font to blend in with the rest of the site.",
+      "default": "archivo_n4"
+    },
+    {
+      "type": "header",
+      "content": "Trustpilot"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_trustpilot",
+      "label": "Show Trustpilot strip",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "trustpilot_rating",
+      "label": "Stars",
+      "options": [
+        { "value": "5", "label": "5" },
+        { "value": "4.5", "label": "4.5" },
+        { "value": "4", "label": "4" },
+        { "value": "3.5", "label": "3.5" },
+        { "value": "3", "label": "3" }
+      ],
+      "default": "5"
+    },
+    {
+      "type": "text",
+      "id": "trustpilot_reviews",
+      "label": "Review count text",
+      "default": "750+ reviews"
+    },
+    {
+      "type": "text",
+      "id": "trustpilot_cta",
+      "label": "Link text",
+      "default": "Read reviews →"
+    },
+    {
+      "type": "text",
+      "id": "trustpilot_link",
+      "label": "Link",
+      "info": "“#reviews” scrolls to the Trustpilot band further down the page.",
+      "default": "#reviews"
+    },
+    {
+      "type": "html",
+      "id": "trustpilot_widget",
+      "label": "Trustpilot TrustBox code (optional)",
+      "info": "Paste a TrustBox mini widget here to replace the strip above. The Trustpilot app or bootstrap script must be installed for it to load."
+    },
+    {
+      "type": "header",
+      "content": "Photos"
+    },
+    {
+      "type": "select",
+      "id": "gallery_ratio",
+      "label": "Main photo shape",
+      "options": [
+        { "value": "4 / 3", "label": "Landscape (4:3)" },
+        { "value": "1 / 1", "label": "Square (1:1)" }
+      ],
+      "default": "4 / 3"
+    },
+    {
+      "type": "color",
+      "id": "gallery_bg",
+      "label": "Photo background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_badge",
+      "label": "Show stock badge on photo",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "badge_in_text",
+      "label": "Badge text when in stock",
+      "info": "Used when the title has no “| status” part.",
+      "default": "IN STOCK"
+    },
+    {
+      "type": "text",
+      "id": "badge_out_text",
+      "label": "Badge text when sold out",
+      "default": "SOLD OUT"
+    },
+    {
+      "type": "color",
+      "id": "badge_in_color",
+      "label": "In-stock badge colour",
+      "info": "Pre-order and made-to-order badges use the orange accent; sold out uses grey.",
+      "default": "#0ADD17"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_consultant",
+      "label": "Show “Talk to a gym consultant” button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "consult_label",
+      "label": "Consultant button text",
+      "default": "Talk to a gym consultant"
+    },
+    {
+      "type": "text",
+      "id": "consult_email",
+      "label": "Consultant email",
+      "default": "support@vulcanfitness.com.au"
+    },
+    {
+      "type": "text",
+      "id": "consult_phone",
+      "label": "Consultant phone",
+      "info": "Leave blank to hide the call option.",
+      "default": "+61 404 969 244"
+    },
+    {
+      "type": "header",
+      "content": "Price & stock"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "price_note",
+      "label": "Note under price",
+      "default": "Tax included. Shipping calculated at checkout."
+    },
+    {
+      "type": "text",
+      "id": "stock_in_text",
+      "label": "Stock line when in stock",
+      "info": "Pre-order and made-to-order products show their title status here instead.",
+      "default": "In stock — dispatches from Brisbane"
+    },
+    {
+      "type": "text",
+      "id": "stock_out_text",
+      "label": "Stock line when sold out",
+      "default": "Sold out — contact us for the next shipment"
+    },
+    {
+      "type": "header",
+      "content": "Afterpay"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_afterpay",
+      "label": "Show Afterpay",
+      "default": true
+    },
+    {
+      "type": "number",
+      "id": "afterpay_min",
+      "label": "Afterpay minimum order ($)",
+      "default": 1
+    },
+    {
+      "type": "number",
+      "id": "afterpay_max",
+      "label": "Afterpay maximum order ($)",
+      "info": "Set this to the limit in your Afterpay contract. Above it, the row says Afterpay isn't available for this price. 0 = no limit.",
+      "default": 2000
+    },
+    {
+      "type": "header",
+      "content": "humm"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_humm",
+      "label": "Show humm",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "humm_mode",
+      "label": "humm message",
+      "options": [
+        { "value": "widget", "label": "humm price widget (recommended)" },
+        { "value": "text", "label": "My own text" }
+      ],
+      "default": "widget",
+      "info": "The widget is humm's own script, so the terms it shows are always current."
+    },
+    {
+      "type": "text",
+      "id": "humm_merchant_id",
+      "label": "humm merchant ID",
+      "default": "30139735"
+    },
+    {
+      "type": "text",
+      "id": "humm_text",
+      "label": "Own text",
+      "info": "Used when “My own text” is selected. Add [amount] to show the price divided by the number of payments below.",
+      "default": "Flexible payment plans available"
+    },
+    {
+      "type": "number",
+      "id": "humm_payments",
+      "label": "Number of payments for [amount]",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Buy buttons"
+    },
+    {
+      "type": "text",
+      "id": "atc_label",
+      "label": "Add to cart text",
+      "default": "Add to cart"
+    },
+    {
+      "type": "text",
+      "id": "sold_out_label",
+      "label": "Sold out text",
+      "default": "Sold out"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_dynamic_checkout",
+      "label": "Show Shop Pay / dynamic checkout button",
+      "info": "Shows Shop Pay and the “More payment options” link. Shopify decides which express button each shopper sees.",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Australian owned"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_au_owned",
+      "label": "Show Australian owned badge",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "au_badge",
+      "label": "Badge image",
+      "info": "Leave empty to use the Australian Owned Certified #08375 badge."
+    },
+    {
+      "type": "text",
+      "id": "au_heading",
+      "label": "Heading",
+      "default": "100% Australian owned"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "au_text",
+      "label": "Text",
+      "default": "Brisbane-based team and showroom at Unit 2A/919-925 Nudgee Road, Banyo QLD 4014."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "tab",
+      "name": "Dropdown (left)",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "text",
+          "id": "emoji",
+          "label": "Emoji",
+          "default": "🚚"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Heading",
+          "default": "Shipping"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Dropdown text",
+          "default": "<p>Add the details customers need here.</p>"
+        }
+      ]
+    },
+    {
+      "type": "guarantee",
+      "name": "Guarantee (right)",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "check", "label": "Tick" },
+            { "value": "shield", "label": "Shield" },
+            { "value": "return", "label": "Return arrow" },
+            { "value": "truck", "label": "Truck" },
+            { "value": "tools", "label": "Spanner" },
+            { "value": "award", "label": "Award" },
+            { "value": "star", "label": "Star" }
+          ],
+          "default": "check"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Heading",
+          "default": "90 Day Love It or Leave It"
+        },
+        {
+          "type": "text",
+          "id": "subtitle",
+          "label": "Subheading",
+          "default": "Not right for your floor? Send it back."
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Dropdown text",
+          "default": "<p>Add the policy details here.</p>"
+        }
+      ]
+    },
+    {
+      "type": "liquid",
+      "name": "Custom code",
+      "settings": [
+        {
+          "type": "liquid",
+          "id": "custom_liquid",
+          "label": "Custom Liquid or HTML",
+          "info": "Shows in the buy box, under the Afterpay and humm rows. Use it for payment widgets or anything else you need to paste in."
+        }
+      ]
+    },
+    {
+      "type": "@app"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Commercial product",
+      "blocks": [
+        {
+          "type": "tab",
+          "settings": { "emoji": "🚚", "title": "Shipping" }
+        },
+        {
+          "type": "tab",
+          "settings": { "emoji": "🛠️", "title": "Installation" }
+        },
+        {
+          "type": "tab",
+          "settings": { "emoji": "🛡️", "title": "Warranty" }
+        },
+        {
+          "type": "guarantee",
+          "settings": {
+            "icon": "check",
+            "title": "90 Day Love It or Leave It",
+            "subtitle": "Not right for your floor? Send it back."
+          }
+        },
+        {
+          "type": "guarantee",
+          "settings": {
+            "icon": "shield",
+            "title": "Commercial warranty",
+            "subtitle": "Built for commercial floors"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,6 @@
+{%- comment -%}
+  Shared stylesheet for the vulcan-* commercial product sections.
+  Every section renders this so each one still looks right on its own;
+  the browser only downloads the file once.
+{%- endcomment -%}
+{{ 'vulcan-commercial.css' | asset_url | stylesheet_tag }}

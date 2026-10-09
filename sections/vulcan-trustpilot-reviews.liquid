@@ -1,0 +1,85 @@
+{%- comment -%}
+  Vulcan commercial product — Trustpilot band. The "Read reviews" link in
+  the main section scrolls here (#reviews).
+{%- endcomment -%}
+
+{%- liquid
+  assign has_widget = false
+  if section.settings.widget != blank or section.blocks.size > 0
+    assign has_widget = true
+  endif
+-%}
+
+{% render 'vulcan-commercial-assets' %}
+<div class="vcp vcp-reviews" id="reviews">
+  <div class="vcp-wrap vcp-reviews__inner">
+    <div>
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="vcp-eyebrow">{{ section.settings.eyebrow | escape }}</p>
+      {%- endif -%}
+      <h2 class="vcp-h2">{{ section.settings.heading | escape }}</h2>
+    </div>
+    {%- if section.settings.button_label != blank and section.settings.button_url != blank -%}
+      <a class="vcp-btn-outline" href="{{ section.settings.button_url }}" target="_blank" rel="noopener">
+        {{- section.settings.button_label | escape -}}
+      </a>
+    {%- endif -%}
+  </div>
+  {%- if has_widget -%}
+    <div class="vcp-wrap vcp-reviews__widget">
+      {{ section.settings.widget }}
+      {%- for block in section.blocks -%}
+        {% render block %}
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Commercial reviews",
+  "tag": "section",
+  "class": "vcp-section vcp-section--reviews",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Small heading",
+      "default": "Trustpilot"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "750+ Australians rate us on Trustpilot"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button text",
+      "default": "Read our Trustpilot reviews"
+    },
+    {
+      "type": "url",
+      "id": "button_url",
+      "label": "Button link"
+    },
+    {
+      "type": "html",
+      "id": "widget",
+      "label": "Trustpilot TrustBox code (optional)",
+      "info": "Paste a TrustBox carousel here (choose the dark theme in Trustpilot). You can also add the Trustpilot app's block to this section."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@app"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Commercial reviews"
+    }
+  ]
+}
+{% endschema %}

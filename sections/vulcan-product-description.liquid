@@ -1,0 +1,84 @@
+{%- comment -%}
+  Vulcan commercial product — Shopify product description.
+  Shows the description written in Shopify admin (Products > Description).
+{%- endcomment -%}
+
+{%- liquid
+  assign description = product.description
+
+  # Most descriptions open with a stock line such as "IN STOCK" or
+  # "MADE TO ORDER 60~75 DAYS". The main section already shows stock, so
+  # optionally drop that first short paragraph.
+  if section.settings.hide_status_line and description contains '</p>'
+    assign first_chunk = description | split: '</p>' | first
+    assign first_text = first_chunk | strip_html | strip | upcase
+    if first_text.size <= 80
+      if first_text contains 'IN STOCK' or first_text contains 'PRE-ORDER' or first_text contains 'PRE ORDER' or first_text contains 'MADE-TO-ORDER' or first_text contains 'MADE TO ORDER' or first_text contains 'SOLD OUT' or first_text contains 'BACKORDER'
+        assign description = description | remove_first: first_chunk | remove_first: '</p>'
+      endif
+    endif
+  endif
+-%}
+
+{%- if description != blank or request.design_mode -%}
+  {% render 'vulcan-commercial-assets' %}
+  <div class="vcp vcp-desc vcp-desc--{{ section.settings.layout }}" id="description">
+    <div class="vcp-wrap vcp-desc__inner">
+      {%- if section.settings.heading != blank -%}
+        <h2 class="vcp-h2">{{ section.settings.heading | escape }}</h2>
+      {%- endif -%}
+      <div class="vcp-rte vcp-desc__body">
+        {%- if description != blank -%}
+          {{ description }}
+        {%- else -%}
+          <p>This product has no description yet. Add one in Shopify admin under Products › Description.</p>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Commercial description",
+  "tag": "section",
+  "class": "vcp-section vcp-section--description",
+  "enabled_on": {
+    "templates": ["product"]
+  },
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Shows the product description from Shopify admin (Products › Description). Edit the text there."
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Description"
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Layout",
+      "options": [
+        { "value": "split", "label": "Heading left, text right" },
+        { "value": "stacked", "label": "Heading above text" }
+      ],
+      "default": "split"
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_status_line",
+      "label": "Hide the stock line at the start of the description",
+      "info": "Removes a short first paragraph like “IN STOCK” or “MADE TO ORDER 60~75 DAYS”, since stock already shows next to the price.",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Commercial description"
+    }
+  ]
+}
+{% endschema %}

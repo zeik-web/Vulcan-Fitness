@@ -1,0 +1,124 @@
+{%- comment -%}
+  Vulcan commercial product — dimensions photo and specification rows.
+{%- endcomment -%}
+
+{%- liquid
+  assign image = section.settings.image
+  assign show_media = false
+  if image != blank or request.design_mode
+    assign show_media = true
+  endif
+-%}
+
+{% render 'vulcan-commercial-assets' %}
+<div
+  class="vcp vcp-dims"
+  id="dimensions"
+  style="--vcp-dims-bg: {{ section.settings.image_bg }}; --vcp-dims-fit: {{ section.settings.image_fit }};"
+>
+  <div class="vcp-wrap vcp-dims__inner">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="vcp-h2">{{ section.settings.heading | escape }}</h2>
+    {%- endif -%}
+    <div class="vcp-dims__grid{% if show_media %} vcp-dims__grid--media{% endif %}">
+      {%- if show_media -%}
+        <div class="vcp-dims__media">
+          {%- if image != blank -%}
+            {{
+              image
+              | image_url: width: 1400
+              | image_tag:
+                loading: 'lazy',
+                widths: '600, 900, 1200, 1400',
+                sizes: '(min-width: 990px) 600px, calc(100vw - 32px)'
+            }}
+          {%- else -%}
+            {{ 'image' | placeholder_svg_tag: 'vcp-placeholder' }}
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+      {%- if section.blocks.size > 0 -%}
+        <dl class="vcp-specs">
+          {%- for block in section.blocks -%}
+            <div class="vcp-specs__row" {{ block.shopify_attributes }}>
+              <dt>{{ block.settings.label | escape }}</dt>
+              <dd>{{ block.settings.value | escape }}</dd>
+            </div>
+          {%- endfor -%}
+        </dl>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Commercial specs",
+  "tag": "section",
+  "class": "vcp-section vcp-section--dims",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Dimensions & specifications"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Dimensions photo",
+      "info": "Square image works best. Leave empty to show the specs full width."
+    },
+    {
+      "type": "select",
+      "id": "image_fit",
+      "label": "Photo fit",
+      "options": [
+        { "value": "contain", "label": "Show whole photo" },
+        { "value": "cover", "label": "Fill the square" }
+      ],
+      "default": "contain"
+    },
+    {
+      "type": "color",
+      "id": "image_bg",
+      "label": "Photo background",
+      "default": "#17171b"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "spec",
+      "name": "Spec row",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Weight stack"
+        },
+        {
+          "type": "text",
+          "id": "value",
+          "label": "Value",
+          "default": "[X] kg"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Commercial specs",
+      "blocks": [
+        { "type": "spec", "settings": { "label": "Weight stack", "value": "[X] kg" } },
+        { "type": "spec", "settings": { "label": "Weight stack ratio", "value": "[X:X]" } },
+        { "type": "spec", "settings": { "label": "Steel thickness", "value": "[X] mm" } },
+        { "type": "spec", "settings": { "label": "Colour", "value": "[Frame colour]" } },
+        { "type": "spec", "settings": { "label": "Upholstery", "value": "[Colour / material]" } },
+        { "type": "spec", "settings": { "label": "Adjustable settings", "value": "[Back pad, shin pad, ROM]" } },
+        { "type": "spec", "settings": { "label": "Dimensions", "value": "L [X] × W [X] × H [X] cm" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
