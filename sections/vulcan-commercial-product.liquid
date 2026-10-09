@@ -298,6 +298,12 @@
               hidden
             >
               {{ block.settings.content }}
+              {%- if block.settings.document_url != blank -%}
+                <a class="vcp-doc-link" href="{{ block.settings.document_url }}" target="_blank" rel="noopener">
+                  {% render 'vulcan-commercial-icon', icon: 'file', size: 20 %}
+                  <span>{{ block.settings.document_label | default: 'Download (PDF)' | escape }}</span>
+                </a>
+              {%- endif -%}
             </div>
           {%- endfor -%}
         </div>
@@ -846,6 +852,18 @@
           "id": "content",
           "label": "Dropdown text",
           "default": "<p>Add the details customers need here.</p>"
+        },
+        {
+          "type": "url",
+          "id": "document_url",
+          "label": "Document link (optional)",
+          "info": "Link to a PDF such as an installation manual. Upload it in Content › Files, copy its link and paste it here."
+        },
+        {
+          "type": "text",
+          "id": "document_label",
+          "label": "Document link text",
+          "default": "Download the installation manual (PDF)"
         }
       ]
     },

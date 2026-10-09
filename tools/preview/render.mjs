@@ -36,6 +36,7 @@ function formatMoney(cents, decimals = true) {
 }
 
 function cdnUrl(src, width) {
+  if (src.startsWith('data:')) return src;
   const url = new URL(src);
   if (width) url.searchParams.set('width', width);
   // Browsers can't show HEIC; Shopify's image_url serves a web format.
@@ -61,7 +62,7 @@ engine.registerFilter('image_url', function (source, ...args) {
 engine.registerFilter('image_tag', function (image, ...args) {
   const options = Object.fromEntries(args.filter(Array.isArray));
   const attrs = { src: image.src, loading: options.loading ?? 'lazy' };
-  if (options.widths) {
+  if (options.widths && !image.src.startsWith('data:')) {
     attrs.srcset = String(options.widths)
       .split(',')
       .map((w) => `${cdnUrl(image.base, w.trim())} ${w.trim()}w`)
@@ -198,7 +199,13 @@ async function renderSection(key, data) {
   return `<section class="shopify-section">${html}</section>`;
 }
 
-const media = product.media.map((m) => ({ ...m, preview_image: { src: m.src } }));
+// Photos not on Shopify yet ("file") are embedded so the preview works offline
+const media = product.media.map((m) => {
+  const src = m.file
+    ? `data:image/jpeg;base64,${readFileSync(join(here, m.file)).toString('base64')}`
+    : m.src;
+  return { ...m, src, preview_image: { src } };
+});
 const variants = product.variants;
 const liquidProduct = {
   ...product,

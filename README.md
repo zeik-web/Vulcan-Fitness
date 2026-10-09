@@ -17,6 +17,10 @@ live Leg Extension & Leg Curl data.
 | **Commercial specs** | Front view and side view dimension photos with arrows (and swipe on phones) to switch between them, plus the specification rows |
 | Product recommendations | District's existing "You may also like" section. Your Trustpilot app adds its review widget below it, as on the rest of the site |
 
+Each Shipping / Installation / Warranty dropdown can also show a download button for a PDF
+(set *Document link* on the dropdown block). The Installation dropdown links to the VUL-K5709A
+installation manual, which is in Shopify under Content › Files (a copy is in `files/`).
+
 `sections/vulcan-trustpilot-reviews.liquid` (a dark Trustpilot band) is still in the theme but no
 longer on the template, since the Trustpilot app already shows reviews there.
 
