@@ -338,51 +338,56 @@
         </div>
       {%- endunless -%}
 
-      {%- if section.settings.show_zip or section.settings.show_humm -%}
-        <div class="vcp-bnpl">
-          {%- if section.settings.show_zip -%}
-            <div class="vcp-bnpl__row">
-              <span class="vcp-bnpl__text">{{ section.settings.zip_text | escape }}</span>
+      <div class="vcp-bnpl">
+        {%- comment -%}
+          The Afterpay app snippet (theme.liquid) adds its own message to the page;
+          vulcan-commercial.js moves it into this row so every payment option
+          shares the same box.
+        {%- endcomment -%}
+        <div class="vcp-bnpl__row vcp-bnpl__row--slot" data-vcp-afterpay-slot hidden></div>
+
+        {%- if section.settings.show_zip -%}
+          <div class="vcp-bnpl__row">
+            <span class="vcp-bnpl__text">{{ section.settings.zip_text | escape }}</span>
+            <a
+              class="vcp-pill vcp-pill--zip"
+              href="https://zip.co/au"
+              target="_blank"
+              rel="noopener"
+              aria-label="Zip (opens in a new tab)"
+            >
+              Zip
+            </a>
+          </div>
+        {%- endif -%}
+
+        {%- if section.settings.show_humm -%}
+          <div class="vcp-bnpl__row">
+            {%- if section.settings.humm_mode == 'widget' and section.settings.humm_merchant_id != blank -%}
+              {%- comment -%}
+                humm's own price widget — the same script your District product pages use.
+                It writes its message where the script tag sits, so it has to load inline.
+              {%- endcomment -%}
+              <div class="vcp-humm-widget">
+                {% # theme-check-disable ParserBlockingScript, RemoteAsset %}
+                <script src="https://bpi.humm-au.com/au/content/scripts/price-info_sync.js?productPrice={{ price | divided_by: 100.0 }}&merchantId={{ section.settings.humm_merchant_id | strip | url_encode }}"></script>
+                {% # theme-check-enable ParserBlockingScript, RemoteAsset %}
+              </div>
+            {%- else -%}
+              <span class="vcp-bnpl__text" data-vcp-humm-text>{{ humm_text }}</span>
               <a
-                class="vcp-pill vcp-pill--zip"
-                href="https://zip.co/au"
+                class="vcp-pill vcp-pill--humm"
+                href="https://www.shophumm.com/au/"
                 target="_blank"
                 rel="noopener"
-                aria-label="Zip (opens in a new tab)"
+                aria-label="humm (opens in a new tab)"
               >
-                Zip
+                humm
               </a>
-            </div>
-          {%- endif -%}
-
-          {%- if section.settings.show_humm -%}
-            <div class="vcp-bnpl__row">
-              {%- if section.settings.humm_mode == 'widget' and section.settings.humm_merchant_id != blank -%}
-                {%- comment -%}
-                  humm's own price widget — the same script your District product pages use.
-                  It writes its message where the script tag sits, so it has to load inline.
-                {%- endcomment -%}
-                <div class="vcp-humm-widget">
-                  {% # theme-check-disable ParserBlockingScript, RemoteAsset %}
-                  <script src="https://bpi.humm-au.com/au/content/scripts/price-info_sync.js?productPrice={{ price | divided_by: 100.0 }}&merchantId={{ section.settings.humm_merchant_id | strip | url_encode }}"></script>
-                  {% # theme-check-enable ParserBlockingScript, RemoteAsset %}
-                </div>
-              {%- else -%}
-                <span class="vcp-bnpl__text" data-vcp-humm-text>{{ humm_text }}</span>
-                <a
-                  class="vcp-pill vcp-pill--humm"
-                  href="https://www.shophumm.com/au/"
-                  target="_blank"
-                  rel="noopener"
-                  aria-label="humm (opens in a new tab)"
-                >
-                  humm
-                </a>
-              {%- endif -%}
-            </div>
-          {%- endif -%}
-        </div>
-      {%- endif -%}
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      </div>
 
       {%- for block in section.blocks -%}
         {%- case block.type -%}

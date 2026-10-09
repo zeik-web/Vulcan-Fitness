@@ -18,12 +18,13 @@
   .preview-theme-part code { font-size: 13px; }
   .vcp-humm-widget:has(.preview-note) { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
   .preview-note { color: #5c5c62; font-size: 13px; font-style: italic; }
+  .preview-afterpay-logo { display: inline-block; margin: 0 2px; padding: 1px 8px; border-radius: 999px; background: #b2fce4; color: #000000; font-weight: 800; font-size: 12px; }
   .preview-shop-pay { width: 100%; border: 0; background: #5a31f4; color: #ffffff; font-size: 16px; cursor: pointer; }
   .preview-shop-pay span { margin-left: 2px; padding: 1px 5px; border-radius: 4px; background: #ffffff; color: #5a31f4; font-weight: 800; font-size: 13px; }
 </style>
 </head>
 <body>
-<div class="preview-bar"><strong>Preview</strong> — rendered from the theme files with the live Leg Extension &amp; Leg Curl data. Buttons don't add to cart here; the dimension photos are stand-ins.</div>
+<div class="preview-bar"><strong>Preview</strong> — rendered from the theme files with the live Leg Extension &amp; Leg Curl data. Buttons don't add to cart here; the Afterpay/humm messages and dimension photos are stand-ins.</div>
 <div class="preview-theme-part">District theme announcement bar &amp; header</div>
 <section class="shopify-section"><style>
 /*
@@ -683,16 +684,21 @@ details[open] > summary .vcp-plus,
   border-radius: var(--vcp-radius);
 }
 
+/* Every payment option gets the same row: height, padding, text size */
 .vcp-bnpl__row {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 12px;
-  padding: 12px 14px;
+  min-height: 60px;
+  padding: 12px 16px;
   font-size: 14px;
+  line-height: 1.45;
+  color: var(--vcp-ink);
 }
 
-/* Divider only between rows that are showing (Afterpay hides outside its limits) */
+/* Divider only between rows that are showing (the Afterpay row stays hidden
+   until the Afterpay app's message arrives) */
 .vcp-bnpl__row:not([hidden]) ~ .vcp-bnpl__row:not([hidden]) {
   border-top: 1px solid var(--vcp-line);
 }
@@ -701,10 +707,28 @@ details[open] > summary .vcp-plus,
   display: none;
 }
 
+/* Afterpay's and humm's own widgets bring their own fonts and margins;
+   line them up with the Zip row */
+.vcp-bnpl__row--slot > *,
 .vcp-humm-widget {
   flex: 1;
   min-width: 0;
-  font-size: 14px;
+}
+
+.vcp-bnpl__row--slot *,
+.vcp-humm-widget * {
+  font-family: inherit !important;
+  font-size: inherit !important;
+  line-height: inherit !important;
+}
+
+.vcp-bnpl__row--slot :is(p, div),
+.vcp-humm-widget :is(p, div) {
+  margin: 0 !important;
+}
+
+.vcp-bnpl__row--slot > * {
+  color: var(--vcp-ink) !important;
 }
 
 .vcp-pill {
@@ -1373,8 +1397,9 @@ details[open] > summary .vcp-plus,
 /*
   Vulcan commercial product page
   Gallery thumbnails, Shipping/Installation/Warranty dropdowns, the consultant
-  popover, quantity stepper, variant changes (price, stock badge), the live
-  Trustpilot widget, front/side dimension views and the Why us effects.
+  popover, quantity stepper, variant changes (price, stock badge), moving the
+  Afterpay app's message into the payment box, the live Trustpilot widget,
+  front/side dimension views and the Why us effects.
   Adding to cart is handled by District's <product-form> element.
 */
 (function () {
@@ -1513,6 +1538,33 @@ details[open] > summary .vcp-plus,
           consult.querySelector('summary').focus();
         }
       });
+    }
+
+    /* ---------- Afterpay ---------- */
+
+    // The Afterpay app snippet inserts its own message next to the price or
+    // form. Move it into the first row of the payment box so Afterpay, Zip and
+    // humm share one border. The app may re-insert it when the price changes,
+    // so keep watching.
+    var afterpaySlot = root.querySelector('[data-vcp-afterpay-slot]');
+    var AFTERPAY = '[class*="afterpay" i], afterpay-placement, square-placement';
+
+    function adoptAfterpay() {
+      var found = Array.prototype.filter.call(root.querySelectorAll(AFTERPAY), function (el) {
+        var parent = el.parentElement && el.parentElement.closest(AFTERPAY);
+        return !afterpaySlot.contains(el) && !(parent && root.contains(parent));
+      });
+      if (!found.length) return;
+      afterpaySlot.replaceChildren(found[found.length - 1]);
+      found.slice(0, -1).forEach(function (el) {
+        el.remove();
+      });
+      afterpaySlot.hidden = false;
+    }
+
+    if (afterpaySlot && 'MutationObserver' in window) {
+      adoptAfterpay();
+      new MutationObserver(adoptAfterpay).observe(root, { childList: true, subtree: true });
     }
 
     /* ---------- Quantity, price and stock badge ---------- */
@@ -1949,22 +2001,22 @@ details[open] > summary .vcp-plus,
       <div class="vcp-price">
         <span class="vcp-price__now" data-vcp-price>$3,499.00</span>
         <s class="vcp-price__was" data-vcp-compare hidden>$3,499.00</s>
-      </div><div class="vcp-price-note">Tax included. Shipping calculated at checkout.</div><div class="vcp-bnpl"><div class="vcp-bnpl__row">
-              <span class="vcp-bnpl__text">Own it now, pay later</span>
-              <a
-                class="vcp-pill vcp-pill--zip"
-                href="https://zip.co/au"
-                target="_blank"
-                rel="noopener"
-                aria-label="Zip (opens in a new tab)"
-              >
-                Zip
-              </a>
-            </div><div class="vcp-bnpl__row"><div class="vcp-humm-widget">
-                  
-                  <span class="preview-note">humm price widget (merchant 30139735) shows here on the live store</span><span class="vcp-pill vcp-pill--humm">humm</span>
-                  
-                </div></div></div><product-form class="vcp-form">
+      </div><div class="vcp-price-note">Tax included. Shipping calculated at checkout.</div><div class="vcp-bnpl"><div class="vcp-bnpl__row vcp-bnpl__row--slot" data-vcp-afterpay-slot hidden></div><div class="vcp-bnpl__row">
+            <span class="vcp-bnpl__text">Own it now, pay later</span>
+            <a
+              class="vcp-pill vcp-pill--zip"
+              href="https://zip.co/au"
+              target="_blank"
+              rel="noopener"
+              aria-label="Zip (opens in a new tab)"
+            >
+              Zip
+            </a>
+          </div><div class="vcp-bnpl__row"><div class="vcp-humm-widget">
+                
+                <span class="preview-note">humm price widget (merchant 30139735) shows here on the live store</span><span class="vcp-pill vcp-pill--humm">humm</span>
+                
+              </div></div></div><product-form class="vcp-form">
         <div class="product-form__error-container vcp-form__error" role="alert" hidden>
           <span class="product-form__error-message"></span>
         </div><form method="post" action="/cart/add" accept-charset="UTF-8" enctype="multipart/form-data" id="vcp-form-template--preview__main" class="vcp-form__form" novalidate="novalidate" data-type="add-to-cart-form"><input type="hidden" name="form_type" value="product"><input type="hidden" name="utf8" value="✓"><input type="hidden" name="id" value="42457685458967" data-vcp-variant-id>
@@ -2701,16 +2753,21 @@ details[open] > summary .vcp-plus,
   border-radius: var(--vcp-radius);
 }
 
+/* Every payment option gets the same row: height, padding, text size */
 .vcp-bnpl__row {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 12px;
-  padding: 12px 14px;
+  min-height: 60px;
+  padding: 12px 16px;
   font-size: 14px;
+  line-height: 1.45;
+  color: var(--vcp-ink);
 }
 
-/* Divider only between rows that are showing (Afterpay hides outside its limits) */
+/* Divider only between rows that are showing (the Afterpay row stays hidden
+   until the Afterpay app's message arrives) */
 .vcp-bnpl__row:not([hidden]) ~ .vcp-bnpl__row:not([hidden]) {
   border-top: 1px solid var(--vcp-line);
 }
@@ -2719,10 +2776,28 @@ details[open] > summary .vcp-plus,
   display: none;
 }
 
+/* Afterpay's and humm's own widgets bring their own fonts and margins;
+   line them up with the Zip row */
+.vcp-bnpl__row--slot > *,
 .vcp-humm-widget {
   flex: 1;
   min-width: 0;
-  font-size: 14px;
+}
+
+.vcp-bnpl__row--slot *,
+.vcp-humm-widget * {
+  font-family: inherit !important;
+  font-size: inherit !important;
+  line-height: inherit !important;
+}
+
+.vcp-bnpl__row--slot :is(p, div),
+.vcp-humm-widget :is(p, div) {
+  margin: 0 !important;
+}
+
+.vcp-bnpl__row--slot > * {
+  color: var(--vcp-ink) !important;
 }
 
 .vcp-pill {
@@ -4071,16 +4146,21 @@ details[open] > summary .vcp-plus,
   border-radius: var(--vcp-radius);
 }
 
+/* Every payment option gets the same row: height, padding, text size */
 .vcp-bnpl__row {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 12px;
-  padding: 12px 14px;
+  min-height: 60px;
+  padding: 12px 16px;
   font-size: 14px;
+  line-height: 1.45;
+  color: var(--vcp-ink);
 }
 
-/* Divider only between rows that are showing (Afterpay hides outside its limits) */
+/* Divider only between rows that are showing (the Afterpay row stays hidden
+   until the Afterpay app's message arrives) */
 .vcp-bnpl__row:not([hidden]) ~ .vcp-bnpl__row:not([hidden]) {
   border-top: 1px solid var(--vcp-line);
 }
@@ -4089,10 +4169,28 @@ details[open] > summary .vcp-plus,
   display: none;
 }
 
+/* Afterpay's and humm's own widgets bring their own fonts and margins;
+   line them up with the Zip row */
+.vcp-bnpl__row--slot > *,
 .vcp-humm-widget {
   flex: 1;
   min-width: 0;
-  font-size: 14px;
+}
+
+.vcp-bnpl__row--slot *,
+.vcp-humm-widget * {
+  font-family: inherit !important;
+  font-size: inherit !important;
+  line-height: inherit !important;
+}
+
+.vcp-bnpl__row--slot :is(p, div),
+.vcp-humm-widget :is(p, div) {
+  margin: 0 !important;
+}
+
+.vcp-bnpl__row--slot > * {
+  color: var(--vcp-ink) !important;
 }
 
 .vcp-pill {
@@ -5429,16 +5527,21 @@ details[open] > summary .vcp-plus,
   border-radius: var(--vcp-radius);
 }
 
+/* Every payment option gets the same row: height, padding, text size */
 .vcp-bnpl__row {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 12px;
-  padding: 12px 14px;
+  min-height: 60px;
+  padding: 12px 16px;
   font-size: 14px;
+  line-height: 1.45;
+  color: var(--vcp-ink);
 }
 
-/* Divider only between rows that are showing (Afterpay hides outside its limits) */
+/* Divider only between rows that are showing (the Afterpay row stays hidden
+   until the Afterpay app's message arrives) */
 .vcp-bnpl__row:not([hidden]) ~ .vcp-bnpl__row:not([hidden]) {
   border-top: 1px solid var(--vcp-line);
 }
@@ -5447,10 +5550,28 @@ details[open] > summary .vcp-plus,
   display: none;
 }
 
+/* Afterpay's and humm's own widgets bring their own fonts and margins;
+   line them up with the Zip row */
+.vcp-bnpl__row--slot > *,
 .vcp-humm-widget {
   flex: 1;
   min-width: 0;
-  font-size: 14px;
+}
+
+.vcp-bnpl__row--slot *,
+.vcp-humm-widget * {
+  font-family: inherit !important;
+  font-size: inherit !important;
+  line-height: inherit !important;
+}
+
+.vcp-bnpl__row--slot :is(p, div),
+.vcp-humm-widget :is(p, div) {
+  margin: 0 !important;
+}
+
+.vcp-bnpl__row--slot > * {
+  color: var(--vcp-ink) !important;
 }
 
 .vcp-pill {
@@ -6177,6 +6298,16 @@ details[open] > summary .vcp-plus,
 <div class="preview-theme-part">District theme section: <code>product-recommendations</code></div>
 <div class="preview-theme-part">District theme footer</div>
 <script>
+  // Stand-in for the Afterpay app snippet, which inserts its message above the
+  // add-to-cart form; the section script moves it into the payment box.
+  document.addEventListener('DOMContentLoaded', function () {
+    var form = document.querySelector('.vcp-form');
+    if (!form) return;
+    var p = document.createElement('p');
+    p.className = 'afterpay-paragraph';
+    p.innerHTML = 'Make 4 interest-free payments of <strong>$874.75</strong> with <span class="preview-afterpay-logo">afterpay</span> &#9432;';
+    form.parentNode.insertBefore(p, form);
+  });
   document.addEventListener('submit', function (event) { event.preventDefault(); alert('Preview only — on the store this adds to cart and opens the District cart popup.'); });
   document.addEventListener('click', function (event) { if (event.target.closest('.shopify-payment-button')) alert('Preview only — on the store this opens Shop Pay checkout.'); });
 </script>

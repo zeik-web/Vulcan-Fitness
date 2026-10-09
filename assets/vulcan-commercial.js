@@ -1,8 +1,9 @@
 /*
   Vulcan commercial product page
   Gallery thumbnails, Shipping/Installation/Warranty dropdowns, the consultant
-  popover, quantity stepper, variant changes (price, stock badge), the live
-  Trustpilot widget, front/side dimension views and the Why us effects.
+  popover, quantity stepper, variant changes (price, stock badge), moving the
+  Afterpay app's message into the payment box, the live Trustpilot widget,
+  front/side dimension views and the Why us effects.
   Adding to cart is handled by District's <product-form> element.
 */
 (function () {
@@ -141,6 +142,33 @@
           consult.querySelector('summary').focus();
         }
       });
+    }
+
+    /* ---------- Afterpay ---------- */
+
+    // The Afterpay app snippet inserts its own message next to the price or
+    // form. Move it into the first row of the payment box so Afterpay, Zip and
+    // humm share one border. The app may re-insert it when the price changes,
+    // so keep watching.
+    var afterpaySlot = root.querySelector('[data-vcp-afterpay-slot]');
+    var AFTERPAY = '[class*="afterpay" i], afterpay-placement, square-placement';
+
+    function adoptAfterpay() {
+      var found = Array.prototype.filter.call(root.querySelectorAll(AFTERPAY), function (el) {
+        var parent = el.parentElement && el.parentElement.closest(AFTERPAY);
+        return !afterpaySlot.contains(el) && !(parent && root.contains(parent));
+      });
+      if (!found.length) return;
+      afterpaySlot.replaceChildren(found[found.length - 1]);
+      found.slice(0, -1).forEach(function (el) {
+        el.remove();
+      });
+      afterpaySlot.hidden = false;
+    }
+
+    if (afterpaySlot && 'MutationObserver' in window) {
+      adoptAfterpay();
+      new MutationObserver(adoptAfterpay).observe(root, { childList: true, subtree: true });
     }
 
     /* ---------- Quantity, price and stock badge ---------- */

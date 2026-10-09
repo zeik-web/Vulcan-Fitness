@@ -655,16 +655,21 @@ details[open] > summary .vcp-plus,
   border-radius: var(--vcp-radius);
 }
 
+/* Every payment option gets the same row: height, padding, text size */
 .vcp-bnpl__row {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 12px;
-  padding: 12px 14px;
+  min-height: 60px;
+  padding: 12px 16px;
   font-size: 14px;
+  line-height: 1.45;
+  color: var(--vcp-ink);
 }
 
-/* Divider only between rows that are showing (Afterpay hides outside its limits) */
+/* Divider only between rows that are showing (the Afterpay row stays hidden
+   until the Afterpay app's message arrives) */
 .vcp-bnpl__row:not([hidden]) ~ .vcp-bnpl__row:not([hidden]) {
   border-top: 1px solid var(--vcp-line);
 }
@@ -673,10 +678,28 @@ details[open] > summary .vcp-plus,
   display: none;
 }
 
+/* Afterpay's and humm's own widgets bring their own fonts and margins;
+   line them up with the Zip row */
+.vcp-bnpl__row--slot > *,
 .vcp-humm-widget {
   flex: 1;
   min-width: 0;
-  font-size: 14px;
+}
+
+.vcp-bnpl__row--slot *,
+.vcp-humm-widget * {
+  font-family: inherit !important;
+  font-size: inherit !important;
+  line-height: inherit !important;
+}
+
+.vcp-bnpl__row--slot :is(p, div),
+.vcp-humm-widget :is(p, div) {
+  margin: 0 !important;
+}
+
+.vcp-bnpl__row--slot > * {
+  color: var(--vcp-ink) !important;
 }
 
 .vcp-pill {

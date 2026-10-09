@@ -250,16 +250,27 @@ const page = `<!doctype html>
   .preview-theme-part code { font-size: 13px; }
   .vcp-humm-widget:has(.preview-note) { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
   .preview-note { color: #5c5c62; font-size: 13px; font-style: italic; }
+  .preview-afterpay-logo { display: inline-block; margin: 0 2px; padding: 1px 8px; border-radius: 999px; background: #b2fce4; color: #000000; font-weight: 800; font-size: 12px; }
   .preview-shop-pay { width: 100%; border: 0; background: #5a31f4; color: #ffffff; font-size: 16px; cursor: pointer; }
   .preview-shop-pay span { margin-left: 2px; padding: 1px 5px; border-radius: 4px; background: #ffffff; color: #5a31f4; font-weight: 800; font-size: 13px; }
 </style>
 </head>
 <body>
-<div class="preview-bar"><strong>Preview</strong> — rendered from the theme files with the live Leg Extension &amp; Leg Curl data. Buttons don't add to cart here; the dimension photos are stand-ins.</div>
+<div class="preview-bar"><strong>Preview</strong> — rendered from the theme files with the live Leg Extension &amp; Leg Curl data. Buttons don't add to cart here; the Afterpay/humm messages and dimension photos are stand-ins.</div>
 <div class="preview-theme-part">District theme announcement bar &amp; header</div>
 ${body}
 <div class="preview-theme-part">District theme footer</div>
 <script>
+  // Stand-in for the Afterpay app snippet, which inserts its message above the
+  // add-to-cart form; the section script moves it into the payment box.
+  document.addEventListener('DOMContentLoaded', function () {
+    var form = document.querySelector('.vcp-form');
+    if (!form) return;
+    var p = document.createElement('p');
+    p.className = 'afterpay-paragraph';
+    p.innerHTML = 'Make 4 interest-free payments of <strong>${formatMoney(Math.round(liquidProduct.selected_or_first_available_variant.price / 4))}</strong> with <span class="preview-afterpay-logo">afterpay</span> &#9432;';
+    form.parentNode.insertBefore(p, form);
+  });
   document.addEventListener('submit', function (event) { event.preventDefault(); alert('Preview only — on the store this adds to cart and opens the District cart popup.'); });
   document.addEventListener('click', function (event) { if (event.target.closest('.shopify-payment-button')) alert('Preview only — on the store this opens Shop Pay checkout.'); });
 </script>
