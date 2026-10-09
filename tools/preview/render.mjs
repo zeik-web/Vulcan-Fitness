@@ -23,6 +23,7 @@ const [samplePath = join(here, 'sample-product.json'), outPath = join(themeRoot,
 const product = JSON.parse(readFileSync(samplePath, 'utf8'));
 const template = JSON.parse(read('templates/product.commercial.json'));
 const MONEY_FORMAT = '${{amount}}';
+const SHOP_FILES = 'https://cdn.shopify.com/s/files/1/0268/0307/7143/files/';
 
 /* ---------- Shopify stand-ins ---------- */
 
@@ -149,6 +150,10 @@ function resolveValue(setting, value) {
   if (setting?.type === 'url' && typeof value === 'string' && value.startsWith('shopify://')) {
     return '/' + value.slice('shopify://'.length);
   }
+  // Images picked in the theme editor live in the store's Files
+  if (setting?.type === 'image_picker' && typeof value === 'string' && value.startsWith('shopify://shop_images/')) {
+    return { src: SHOP_FILES + value.slice('shopify://shop_images/'.length) };
+  }
   return value;
 }
 
@@ -255,7 +260,7 @@ const page = `<!doctype html>
 </style>
 </head>
 <body>
-<div class="preview-bar"><strong>Preview</strong> — rendered from the theme files with the live Leg Extension &amp; Leg Curl data. Buttons don't add to cart here; the Afterpay/humm messages and dimension photos are stand-ins.</div>
+<div class="preview-bar"><strong>Preview</strong> — rendered from the theme files with the live Leg Extension &amp; Leg Curl data. Buttons don't add to cart here; the Afterpay/humm messages are stand-ins.</div>
 <div class="preview-theme-part">District theme announcement bar &amp; header</div>
 ${body}
 <div class="preview-theme-part">District theme footer</div>
