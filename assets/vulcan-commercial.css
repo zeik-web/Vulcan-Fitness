@@ -684,12 +684,13 @@ details[open] > summary .vcp-plus,
   font-size: 14px;
 }
 
-.vcp-bnpl__row + .vcp-bnpl__row {
+/* Divider only between rows that are showing (Afterpay hides outside its limits) */
+.vcp-bnpl__row:not([hidden]) ~ .vcp-bnpl__row:not([hidden]) {
   border-top: 1px solid var(--vcp-line);
 }
 
-.vcp-bnpl__row--muted .vcp-bnpl__text {
-  color: var(--vcp-muted);
+.vcp-bnpl:not(:has(.vcp-bnpl__row:not([hidden]))) {
+  display: none;
 }
 
 .vcp-humm-widget {
@@ -930,6 +931,8 @@ details[open] > summary .vcp-plus,
 .vcp-desc__body {
   max-width: 820px;
   font-size: 16px;
+  /* Matches the black the Shopify editor adds inline to most description text */
+  color: var(--vcp-ink);
 }
 
 @media (min-width: 990px) {
@@ -963,12 +966,43 @@ details[open] > summary .vcp-plus,
 .vcp-why__grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 32px;
+  gap: 16px;
 }
 
 .vcp-why__item {
-  padding-top: 16px;
-  border-top: 2px solid var(--vcp-accent);
+  position: relative;
+  padding: 20px 16px 22px;
+  border-radius: var(--vcp-radius);
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.3s ease;
+}
+
+/* Orange line along the top; it draws across when the card scrolls in */
+.vcp-why__item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--vcp-accent);
+  transform-origin: left center;
+  transition:
+    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+    height 0.25s ease;
+}
+
+.vcp-why__num {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  font-variant-numeric: tabular-nums;
+  color: #a3a3aa;
+  transition: color 0.25s ease;
 }
 
 .vcp-why__item h3 {
@@ -980,6 +1014,49 @@ details[open] > summary .vcp-plus,
 
 .vcp-why__item .vcp-rte {
   font-size: 16px;
+}
+
+/* Scroll reveal — only once the script is running, so cards never stay hidden */
+.vcp-why--ready .vcp-why__item:not(.is-visible) {
+  opacity: 0;
+  transform: translateY(18px);
+}
+
+.vcp-why--ready .vcp-why__item:not(.is-visible)::before {
+  transform: scaleX(0);
+}
+
+/* Highlighted card: hover on desktop, the card mid-screen on touch screens */
+.vcp-why__item.is-active {
+  background: var(--vcp-sand);
+  transform: translateY(-4px);
+}
+
+.vcp-why__item.is-active::before {
+  height: 4px;
+}
+
+.vcp-why__item.is-active .vcp-why__num {
+  color: var(--vcp-accent);
+}
+
+@media (hover: hover) {
+  .vcp-why__item:hover {
+    background: var(--vcp-sand);
+    transform: translateY(-4px);
+  }
+
+  .vcp-why__item:hover::before {
+    height: 4px;
+  }
+
+  .vcp-why__item:hover .vcp-why__num {
+    color: var(--vcp-accent);
+  }
+
+  .vcp-why__grid:hover .vcp-why__item.is-visible:not(:hover) {
+    opacity: 0.55;
+  }
 }
 
 @media (min-width: 990px) {
@@ -1195,7 +1272,14 @@ details[open] > summary .vcp-plus,
 
 @media (prefers-reduced-motion: reduce) {
   .vcp-plus,
-  .vcp-atc {
+  .vcp-atc,
+  .vcp-why__item,
+  .vcp-why__item::before {
     transition: none;
+  }
+
+  .vcp-why__item.is-active,
+  .vcp-why__item:hover {
+    transform: none;
   }
 }

@@ -12,8 +12,8 @@ live Leg Extension & Leg Curl data.
 | Section (theme editor name) | What it does |
 | --- | --- |
 | **Commercial product** | Breadcrumb, Trustpilot strip, title + blurb, photo gallery with stock badge and "Talk to a gym consultant", the 🚚 Shipping / 🛠️ Installation / 🛡️ Warranty dropdowns, and the buy box |
-| **Commercial description** | The product description from Shopify admin (Products › Description) |
-| **Commercial why us** | "Why us?" heading, intro line and up to 6 feature columns |
+| **Commercial description** | Each product's own description from Shopify admin (Products › Description), shown full width with no heading — edit the product and the page updates |
+| **Commercial why us** | "Why us?" heading, intro line and up to 6 numbered feature cards. They fade up in turn as you scroll to them; hovering one lifts and highlights it (on phones, the card in the middle of the screen highlights) |
 | **Commercial specs** | Dimensions photo and specification rows |
 | **Commercial reviews** | Dark Trustpilot band — the "Read reviews →" link scrolls here |
 | Product recommendations | District's existing "You may also like" section |
@@ -24,8 +24,8 @@ live Leg Extension & Leg Curl data.
 - **Stock**: product titles here end with a status (`| IN STOCK`, `| MADE-TO-ORDER 60~75 DAYS`, `| PRE-ORDER …`).
   That part is taken out of the heading and shown in the photo badge (green for in stock, orange
   otherwise) and the stock line. A sold-out variant shows "Sold out" and disables the button.
-- **Afterpay**: "4 interest-free payments of $X" (price ÷ 4). Above the *Afterpay maximum order*
-  setting (default $2,000) it says Afterpay isn't available at that price instead.
+- **Afterpay**: "4 interest-free payments of $X" (price ÷ 4). Set to your $4,000 Afterpay limit —
+  products priced above it simply don't show the Afterpay row.
 - **humm**: humm's own price widget, using the same script and merchant ID (30139735) as your
   current product pages, so the terms it shows stay current. You can switch to your own text.
 - **Shop Pay**: Shopify's dynamic checkout button (`payment_button`) — Shop Pay plus the
@@ -87,8 +87,6 @@ Fill in or check these — they're placeholders or depend on your accounts:
   subheading still have `[X years]` placeholders.
 - **Colour** and **Upholstery** spec rows (`[Frame colour]`, `[Colour / material]`).
 - **Dimensions photo**: pick it in *Commercial specs*. Until then the specs show full width.
-- **Afterpay maximum**: set it to the limit in your Afterpay contract. With the default $2,000 the
-  $3,499 machine shows "Available on orders between $1 and $2,000" rather than instalments.
 - **Trustpilot count**: "750+" is from the design; check it matches your profile.
 
 ## Rebuilding the preview

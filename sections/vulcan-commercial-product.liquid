@@ -325,17 +325,9 @@
       {%- if section.settings.show_afterpay or section.settings.show_humm -%}
         <div class="vcp-bnpl">
           {%- if section.settings.show_afterpay -%}
-            <div class="vcp-bnpl__row" data-vcp-afterpay>
-              <span class="vcp-bnpl__text" data-vcp-afterpay-in {% unless afterpay_ok %}hidden{% endunless %}>
+            <div class="vcp-bnpl__row" data-vcp-afterpay {% unless afterpay_ok %}hidden{% endunless %}>
+              <span class="vcp-bnpl__text">
                 4 interest-free payments of <strong data-vcp-afterpay-amount>{{ afterpay_amount | money }}</strong>
-              </span>
-              <span class="vcp-bnpl__text vcp-bnpl__text--muted" data-vcp-afterpay-out {% if afterpay_ok %}hidden{% endif %}>
-                {%- if afterpay_max > 0 -%}
-                  Available on orders between {{ afterpay_min | money_without_trailing_zeros }} and
-                  {{ afterpay_max | money_without_trailing_zeros }}
-                {%- else -%}
-                  Available on orders over {{ afterpay_min | money_without_trailing_zeros }}
-                {%- endif -%}
               </span>
               <a
                 class="vcp-pill vcp-pill--afterpay"
@@ -715,8 +707,8 @@
       "type": "number",
       "id": "afterpay_max",
       "label": "Afterpay maximum order ($)",
-      "info": "Set this to the limit in your Afterpay contract. Above it, the row says Afterpay isn't available for this price. 0 = no limit.",
-      "default": 2000
+      "info": "Your Afterpay contract limit. Products priced outside the minimum and maximum hide the Afterpay row. 0 = no limit.",
+      "default": 4000
     },
     {
       "type": "header",

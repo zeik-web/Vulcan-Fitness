@@ -22,7 +22,10 @@
 
 {%- if description != blank or request.design_mode -%}
   {% render 'vulcan-commercial-assets' %}
-  <div class="vcp vcp-desc vcp-desc--{{ section.settings.layout }}" id="description">
+  <div
+    class="vcp vcp-desc{% if section.settings.heading != blank %} vcp-desc--{{ section.settings.layout }}{% endif %}"
+    id="description"
+  >
     <div class="vcp-wrap vcp-desc__inner">
       {%- if section.settings.heading != blank -%}
         <h2 class="vcp-h2">{{ section.settings.heading | escape }}</h2>
@@ -49,18 +52,18 @@
   "settings": [
     {
       "type": "paragraph",
-      "content": "Shows the product description from Shopify admin (Products › Description). Edit the text there."
+      "content": "Shows each product's own description from Shopify admin (Products › Description), so it updates automatically when you edit the product."
     },
     {
       "type": "text",
       "id": "heading",
-      "label": "Heading",
-      "default": "Description"
+      "label": "Heading (optional)",
+      "info": "Leave empty for no heading."
     },
     {
       "type": "select",
       "id": "layout",
-      "label": "Layout",
+      "label": "Layout when there's a heading",
       "options": [
         { "value": "split", "label": "Heading left, text right" },
         { "value": "stacked", "label": "Heading above text" }

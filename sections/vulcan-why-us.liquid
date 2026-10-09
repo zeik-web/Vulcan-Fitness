@@ -1,9 +1,12 @@
 {%- comment -%}
   Vulcan commercial product — "Why us?" feature columns.
+  Cards fade up in turn as they scroll into view; hovering one (or, on
+  phones, the card in the middle of the screen) highlights it.
 {%- endcomment -%}
 
 {% render 'vulcan-commercial-assets' %}
-<div class="vcp vcp-why">
+<script src="{{ 'vulcan-commercial.js' | asset_url }}" defer="defer"></script>
+<div class="vcp vcp-why" data-vcp-why>
   <div class="vcp-wrap vcp-why__inner">
     <div class="vcp-why__intro">
       {%- if section.settings.heading != blank -%}
@@ -16,7 +19,12 @@
     {%- if section.blocks.size > 0 -%}
       <div class="vcp-why__grid">
         {%- for block in section.blocks -%}
-          <div class="vcp-why__item" {{ block.shopify_attributes }}>
+          <div class="vcp-why__item" data-vcp-why-item {{ block.shopify_attributes }}>
+            {%- if section.settings.show_numbers -%}
+              <span class="vcp-why__num" aria-hidden="true">
+                {%- if forloop.index < 10 %}0{% endif %}{{ forloop.index -}}
+              </span>
+            {%- endif -%}
             <h3>{{ block.settings.title | escape }}</h3>
             <div class="vcp-rte">{{ block.settings.text }}</div>
           </div>
@@ -43,6 +51,12 @@
       "id": "intro",
       "label": "Intro line",
       "default": "Commercial fit-outs priced openly, shipped and installed from Brisbane."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_numbers",
+      "label": "Number the features (01, 02, 03)",
+      "default": true
     }
   ],
   "blocks": [

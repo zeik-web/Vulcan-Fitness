@@ -1,7 +1,8 @@
 /*
   Vulcan commercial product page
   Gallery thumbnails, Shipping/Installation/Warranty dropdowns, the consultant
-  popover, quantity stepper and variant changes (price, stock, Afterpay).
+  popover, quantity stepper, variant changes (price, stock, Afterpay) and the
+  Why us scroll/hover effects.
   Adding to cart is handled by District's <product-form> element.
 */
 (function () {
@@ -151,8 +152,7 @@
     var stockTextEl = root.querySelector('[data-vcp-stock-text]');
     var atcButton = root.querySelector('[data-vcp-atc]');
     var atcLabel = root.querySelector('[data-vcp-atc-label]');
-    var afterpayIn = root.querySelector('[data-vcp-afterpay-in]');
-    var afterpayOut = root.querySelector('[data-vcp-afterpay-out]');
+    var afterpayRow = root.querySelector('[data-vcp-afterpay]');
     var afterpayAmount = root.querySelector('[data-vcp-afterpay-amount]');
     var hummAmount = root.querySelector('[data-vcp-humm-amount]');
 
@@ -207,10 +207,9 @@
         }
       }
 
-      if (afterpayIn && afterpayOut) {
-        var eligible = price >= (config.afterpayMin || 0) && (!config.afterpayMax || price <= config.afterpayMax);
-        afterpayIn.hidden = !eligible;
-        afterpayOut.hidden = eligible;
+      if (afterpayRow) {
+        afterpayRow.hidden =
+          price < (config.afterpayMin || 0) || (config.afterpayMax > 0 && price > config.afterpayMax);
         if (afterpayAmount) afterpayAmount.textContent = money(Math.round(price / 4));
       }
 
@@ -253,8 +252,63 @@
     }
   }
 
+  /* ---------- Why us ---------- */
+
+  function initWhy(root) {
+    if (!root || root.dataset.vcpReady) return;
+    root.dataset.vcpReady = 'true';
+
+    var items = Array.prototype.slice.call(root.querySelectorAll('[data-vcp-why-item]'));
+    var canObserve = 'IntersectionObserver' in window;
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Fade the cards up one after another as they scroll into view.
+    if (!canObserve || reduceMotion) {
+      items.forEach(function (item) {
+        item.classList.add('is-visible');
+      });
+    } else {
+      root.classList.add('vcp-why--ready');
+      var revealObserver = new IntersectionObserver(
+        function (entries) {
+          entries
+            .filter(function (entry) {
+              return entry.isIntersecting;
+            })
+            .forEach(function (entry, index) {
+              revealObserver.unobserve(entry.target);
+              setTimeout(function () {
+                entry.target.classList.add('is-visible');
+              }, index * 120);
+            });
+        },
+        { threshold: 0.2 }
+      );
+      items.forEach(function (item) {
+        revealObserver.observe(item);
+      });
+    }
+
+    // Touch screens can't hover, so highlight the card crossing the middle
+    // of the screen instead.
+    if (canObserve && window.matchMedia('(hover: none)').matches) {
+      var activeObserver = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            entry.target.classList.toggle('is-active', entry.isIntersecting);
+          });
+        },
+        { rootMargin: '-45% 0px -45% 0px' }
+      );
+      items.forEach(function (item) {
+        activeObserver.observe(item);
+      });
+    }
+  }
+
   function initAll(scope) {
     (scope || document).querySelectorAll('[data-vcp-product]').forEach(initProduct);
+    (scope || document).querySelectorAll('[data-vcp-why]').forEach(initWhy);
   }
 
   window.VulcanCommercial = { init: initAll, formatMoney: formatMoney };
@@ -275,5 +329,6 @@
   document.addEventListener('shopify:block:select', function (event) {
     var root = event.target.closest('[data-vcp-product]');
     if (root && root.vcpOpenTab) root.vcpOpenTab(event.target);
+    if (event.target.matches('[data-vcp-why-item]')) event.target.classList.add('is-visible');
   });
 })();

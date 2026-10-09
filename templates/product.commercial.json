@@ -81,7 +81,7 @@
         "stock_out_text": "Sold out — contact us for the next shipment",
         "show_afterpay": true,
         "afterpay_min": 1,
-        "afterpay_max": 2000,
+        "afterpay_max": 4000,
         "show_humm": true,
         "humm_mode": "widget",
         "humm_merchant_id": "30139735",
@@ -98,7 +98,7 @@
     "description": {
       "type": "vulcan-product-description",
       "settings": {
-        "heading": "Description",
+        "heading": "",
         "layout": "split",
         "hide_status_line": true
       }
@@ -131,7 +131,8 @@
       "block_order": ["feature_rom", "feature_easy", "feature_stack"],
       "settings": {
         "heading": "Why us?",
-        "intro": "Commercial fit-outs priced openly, shipped and installed from Brisbane."
+        "intro": "Commercial fit-outs priced openly, shipped and installed from Brisbane.",
+        "show_numbers": true
       }
     },
     "dimensions": {

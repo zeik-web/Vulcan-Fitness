@@ -208,13 +208,16 @@ for (const key of template.order) {
 }
 
 let body = sectionsHtml.join('\n');
+let scriptInlined = false;
 const badge = readFileSync(join(themeRoot, 'assets/vulcan-australian-owned.webp')).toString('base64');
 body = body
   .replace(/asset:\/\/vulcan-australian-owned\.webp/g, `data:image/webp;base64,${badge}`)
-  .replace(
-    /<script src="asset:\/\/vulcan-commercial\.js" defer="defer"><\/script>/,
-    () => `<script>\n${read('assets/vulcan-commercial.js')}\n</script>`
-  )
+  // Sections each include the script; inline it once and drop the repeats.
+  .replace(/<script src="asset:\/\/vulcan-commercial\.js" defer="defer"><\/script>/g, () => {
+    if (scriptInlined) return '';
+    scriptInlined = true;
+    return `<script>\n${read('assets/vulcan-commercial.js')}\n</script>`;
+  })
   // humm's widget only answers on the live store; show where it renders.
   .replace(
     /<script src="https:\/\/bpi\.humm-au\.com[^"]*"><\/script>/g,
