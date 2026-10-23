@@ -78,10 +78,15 @@ snippets/vulcan-commercial-icon.liquid       line icons
 assets/vulcan-commercial.css
 assets/vulcan-commercial.js                  gallery, dropdowns, quantity, variants
 assets/vulcan-australian-owned.webp
-templates/product.commercial-legextcurl.json the Leg Extension & Leg Curl template
+templates/product.commercial-legextcurl.json the Leg Extension & Leg Curl starting template
+store-templates/                             copies of the 11 live commercial templates (23 Oct 2026),
+                                             as uploaded with the live Trustpilot strip
 preview/commercial-product-preview.html      static preview (not used by Shopify)
 tools/preview/                               script that builds the preview
 ```
+
+`store-templates/` is a snapshot, not the source: once you edit a template in the theme editor,
+the store's copy is the one that counts.
 
 ## Installing on the store
 
