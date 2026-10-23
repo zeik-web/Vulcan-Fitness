@@ -328,6 +328,24 @@ details[open] > summary .vcp-plus,
   max-width: 260px;
 }
 
+/* The one-line widget sits in the same bordered strip as the static one
+   (wider while loading so the strip inside stays on one line) */
+.vcp-tp-live--micro_combo {
+  max-width: 480px;
+}
+
+.vcp-tp-live--micro_combo:has(iframe) {
+  max-width: 400px;
+  padding: 11px 14px;
+  border: 1px solid var(--vcp-line);
+  border-radius: var(--vcp-radius);
+  background: #ffffff;
+}
+
+.vcp-tp-live:has(iframe) > .vcp-tp {
+  display: none;
+}
+
 .vcp-heading {
   display: flex;
   flex-direction: column;

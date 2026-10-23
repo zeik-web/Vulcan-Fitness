@@ -27,10 +27,15 @@ longer on the template, since the Trustpilot app already shows reviews there.
 ### Trustpilot
 
 The strip above the title is Trustpilot's own widget for business ID `6022a7fcf1069f000155785b`
-(the same account your Trustpilot app uses), so the stars, TrustScore and review count stay live.
-Choose *Mini* (stars, TrustScore and review count, like the one in the footer), or one of the
-one-line *Micro* widgets, under **Trustpilot widget**. The TrustScore and review count settings
-are only used for the plain strip, and while the widget loads.
+(the same account your Trustpilot app uses), so the stars and review count stay live — no need
+to update the number as reviews come in. Under **Trustpilot widget**:
+
+- *Strip — stars & review count, one line (live)* (the default): Trustpilot's Micro Combo widget
+  ("Excellent ★★★★★ 767 reviews on Trustpilot") inside the same bordered strip as before.
+- *Mini*: stars, TrustScore and review count, like the one in the footer.
+- *Micro TrustScore* / *Micro Star*: other one-line widgets.
+- *Strip with the numbers below (not live)*: the plain strip, using the TrustScore and review
+  count you type in. Those two settings are also what shows while a live widget loads.
 
 ### Buy box
 

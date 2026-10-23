@@ -96,6 +96,9 @@
           assign tp_stars = tp_score | times: 2 | round | divided_by: 2.0
           assign tp_url = section.settings.trustpilot_link | default: 'https://au.trustpilot.com/review/vulcanfitness.com.au'
           case section.settings.trustpilot_style
+            when 'micro_combo'
+              assign tp_template = '5419b6ffb0d04a076446a9af'
+              assign tp_height = '20px'
             when 'mini'
               assign tp_template = '53aa8807dec7e10d38f59f32'
               assign tp_height = '150px'
@@ -575,13 +578,14 @@
       "id": "trustpilot_style",
       "label": "Trustpilot widget",
       "options": [
+        { "value": "micro_combo", "label": "Strip — stars & review count, one line (live)" },
         { "value": "mini", "label": "Mini — stars, TrustScore & review count (live)" },
         { "value": "micro_trustscore", "label": "Micro TrustScore — one line (live)" },
         { "value": "micro_star", "label": "Micro Star — one line (live)" },
         { "value": "static", "label": "Strip with the numbers below (not live)" }
       ],
-      "default": "mini",
-      "info": "The live widgets are Trustpilot's own and update by themselves."
+      "default": "micro_combo",
+      "info": "The live widgets are Trustpilot's own, so the stars and review count update by themselves."
     },
     {
       "type": "text",
@@ -600,7 +604,7 @@
       "type": "text",
       "id": "trustpilot_reviews",
       "label": "Review count text",
-      "default": "763 reviews"
+      "default": "767 reviews"
     },
     {
       "type": "text",
