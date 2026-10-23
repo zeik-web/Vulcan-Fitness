@@ -62,7 +62,7 @@
         "breadcrumb_label": "Commercial",
         "breadcrumb_url": "shopify://pages/commercial-fitout-series",
         "show_trustpilot": true,
-        "trustpilot_style": "micro_combo",
+        "trustpilot_style": "static",
         "trustpilot_business_id": "6022a7fcf1069f000155785b",
         "trustpilot_score": "4.9",
         "trustpilot_reviews": "767 reviews",
