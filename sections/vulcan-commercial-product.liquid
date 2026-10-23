@@ -217,20 +217,26 @@
               </summary>
               <div class="vcp-consult__panel">
                 {%- if section.settings.consult_email != blank -%}
-                  <a href="mailto:{{ section.settings.consult_email | strip }}">
+                  <a
+                    href="mailto:{{ section.settings.consult_email | strip }}"
+                    data-vcp-copy="{{ section.settings.consult_email | strip | escape }}"
+                  >
                     {% render 'vulcan-commercial-icon', icon: 'mail', size: 18 %}
                     <span>
                       <strong>Email us</strong>
-                      <span class="vcp-consult__sub">{{ section.settings.consult_email | escape }}</span>
+                      <span class="vcp-consult__sub" aria-live="polite">{{ section.settings.consult_email | escape }}</span>
                     </span>
                   </a>
                 {%- endif -%}
                 {%- if section.settings.consult_phone != blank -%}
-                  <a href="tel:{{ section.settings.consult_phone | remove: ' ' | remove: '(' | remove: ')' | remove: '-' }}">
+                  <a
+                    href="tel:{{ section.settings.consult_phone | remove: ' ' | remove: '(' | remove: ')' | remove: '-' }}"
+                    data-vcp-copy="{{ section.settings.consult_phone | strip | escape }}"
+                  >
                     {% render 'vulcan-commercial-icon', icon: 'phone', size: 18 %}
                     <span>
                       <strong>Call us</strong>
-                      <span class="vcp-consult__sub">{{ section.settings.consult_phone | escape }}</span>
+                      <span class="vcp-consult__sub" aria-live="polite">{{ section.settings.consult_phone | escape }}</span>
                     </span>
                   </a>
                 {%- endif -%}

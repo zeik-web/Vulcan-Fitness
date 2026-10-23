@@ -1,6 +1,7 @@
 {%- comment -%}
   Vulcan commercial product — dimensions photos and specification rows.
-  Front and side view drawings with arrows (and swipe) to switch between them.
+  Front and side view drawings; the arrows and view buttons sit underneath
+  (swipe also works on phones).
 {%- endcomment -%}
 
 {%- liquid
@@ -31,54 +32,59 @@
     {%- endif -%}
     <div class="vcp-dims__grid{% if show_media %} vcp-dims__grid--media{% endif %}">
       {%- if show_media -%}
-        <div class="vcp-dims__media" data-vcp-views>
-          {%- assign shown = 0 -%}
-          {%- for key in view_keys -%}
-            {%- assign image = section.settings[key] -%}
-            {%- if image != blank -%}
-              {%- assign label_key = key | append: '_label' -%}
-              <figure class="vcp-dims__view" data-vcp-view {% if shown > 0 %}hidden{% endif %}>
-                {{
-                  image
-                  | image_url: width: 1400
-                  | image_tag:
-                    loading: 'lazy',
-                    widths: '600, 900, 1200, 1400',
-                    sizes: '(min-width: 990px) 600px, calc(100vw - 32px)',
-                    alt: section.settings[label_key]
-                }}
-              </figure>
-              {%- assign shown = shown | plus: 1 -%}
+        <div class="vcp-dims__viewer" data-vcp-views>
+          <div class="vcp-dims__media">
+            {%- assign shown = 0 -%}
+            {%- for key in view_keys -%}
+              {%- assign image = section.settings[key] -%}
+              {%- if image != blank -%}
+                {%- assign label_key = key | append: '_label' -%}
+                <figure class="vcp-dims__view" data-vcp-view {% if shown > 0 %}hidden{% endif %}>
+                  {{
+                    image
+                    | image_url: width: 1400
+                    | image_tag:
+                      loading: 'lazy',
+                      widths: '600, 900, 1200, 1400',
+                      sizes: '(min-width: 990px) 600px, calc(100vw - 32px)',
+                      alt: section.settings[label_key]
+                  }}
+                </figure>
+                {%- assign shown = shown | plus: 1 -%}
+              {%- endif -%}
+            {%- endfor -%}
+
+            {%- if view_count == 0 -%}
+              {{ 'image' | placeholder_svg_tag: 'vcp-placeholder' }}
             {%- endif -%}
-          {%- endfor -%}
+          </div>
 
-          {%- if view_count == 0 -%}
-            {{ 'image' | placeholder_svg_tag: 'vcp-placeholder' }}
-          {%- endif -%}
-
+          {%- comment -%} Controls sit under the drawing so they never cover a measurement {%- endcomment -%}
           {%- if view_count > 1 -%}
-            <button type="button" class="vcp-dims__arrow vcp-dims__arrow--prev" data-vcp-view-step="-1" aria-label="Previous view">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M15 18l-6-6 6-6"></path></svg>
-            </button>
-            <button type="button" class="vcp-dims__arrow vcp-dims__arrow--next" data-vcp-view-step="1" aria-label="Next view">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 18l6-6-6-6"></path></svg>
-            </button>
-            <div class="vcp-dims__switch" role="group" aria-label="Dimension views">
-              {%- assign shown = 0 -%}
-              {%- for key in view_keys -%}
-                {%- if section.settings[key] != blank -%}
-                  {%- assign label_key = key | append: '_label' -%}
-                  <button
-                    type="button"
-                    class="vcp-dims__tab"
-                    data-vcp-view-go
-                    aria-pressed="{% if shown == 0 %}true{% else %}false{% endif %}"
-                  >
-                    {{- section.settings[label_key] | escape -}}
-                  </button>
-                  {%- assign shown = shown | plus: 1 -%}
-                {%- endif -%}
-              {%- endfor -%}
+            <div class="vcp-dims__controls">
+              <button type="button" class="vcp-dims__arrow" data-vcp-view-step="-1" aria-label="Previous view">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M15 18l-6-6 6-6"></path></svg>
+              </button>
+              <div class="vcp-dims__switch" role="group" aria-label="Dimension views">
+                {%- assign shown = 0 -%}
+                {%- for key in view_keys -%}
+                  {%- if section.settings[key] != blank -%}
+                    {%- assign label_key = key | append: '_label' -%}
+                    <button
+                      type="button"
+                      class="vcp-dims__tab"
+                      data-vcp-view-go
+                      aria-pressed="{% if shown == 0 %}true{% else %}false{% endif %}"
+                    >
+                      {{- section.settings[label_key] | escape -}}
+                    </button>
+                    {%- assign shown = shown | plus: 1 -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+              <button type="button" class="vcp-dims__arrow" data-vcp-view-step="1" aria-label="Next view">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 18l6-6-6-6"></path></svg>
+              </button>
             </div>
           {%- endif -%}
         </div>

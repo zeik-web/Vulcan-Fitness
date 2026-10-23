@@ -45,6 +45,28 @@
     return template.replace(placeholder, value);
   }
 
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    return new Promise(function (resolve, reject) {
+      var field = document.createElement('textarea');
+      field.value = text;
+      field.setAttribute('readonly', '');
+      field.style.position = 'fixed';
+      field.style.opacity = '0';
+      document.body.appendChild(field);
+      field.select();
+      var copied = false;
+      try {
+        copied = document.execCommand('copy');
+      } catch (error) {
+        copied = false;
+      }
+      field.remove();
+      if (copied) resolve();
+      else reject(new Error('copy failed'));
+    });
+  }
+
   // Text after the last " | " in a title, e.g. "IN STOCK".
   function titleStatus(title) {
     var index = String(title || '').lastIndexOf(' | ');
@@ -181,6 +203,28 @@
 
     var consult = root.querySelector('[data-vcp-consult]');
     if (consult) {
+      // Laptops often have no mail or phone app linked to email/call links,
+      // so clicking does nothing. On mouse-driven screens, also copy the
+      // address or number and say so. The link itself still opens.
+      var mouseScreen = window.matchMedia('(hover: hover) and (pointer: fine)');
+      consult.querySelectorAll('[data-vcp-copy]').forEach(function (link) {
+        link.addEventListener('click', function () {
+          if (!mouseScreen.matches) return;
+          var value = link.getAttribute('data-vcp-copy');
+          var sub = link.querySelector('.vcp-consult__sub');
+          copyText(value).then(function () {
+            if (!sub) return;
+            sub.textContent = 'Copied to clipboard ✓';
+            sub.classList.add('is-copied');
+            clearTimeout(link.vcpCopyTimer);
+            link.vcpCopyTimer = setTimeout(function () {
+              sub.textContent = value;
+              sub.classList.remove('is-copied');
+            }, 2500);
+          }, function () {});
+        });
+      });
+
       document.addEventListener('click', function (event) {
         if (consult.open && !consult.contains(event.target)) consult.open = false;
       });
